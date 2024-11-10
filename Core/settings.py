@@ -36,6 +36,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'App_Auth',
+    'App_Ecommerce',
+
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
@@ -151,7 +153,7 @@ STATICFILES_DIRS = [
 ]
 # STATIC_ROOT = ''
 
-# STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = MEDIA_DIR
