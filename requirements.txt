@@ -1,0 +1,46 @@
+### Default
+django
+sqlparse
+tzdata
+asgiref
+
+### image
+pillow
+
+### media clear after delete
+django-cleanup
+
+### bootstrap ui
+django-crispy-forms
+crispy-bootstrap4
+django-js-asset
+django-tempus-dominus
+
+### Mysql Server
+# mysqlclient
+# mysql-server
+
+### PostgreSQL Server
+# psycopg2
+# pytz
+
+### WEB3 Integration
+# web3
+
+### env file for secret key
+python-decouple
+
+# Admin Log
+django-admin-logs
+
+### Admin UI
+django-jazzmin
+
+### For SSL
+django-sslserver
+# py manage.py runsslserver
+
+djangorestframework
+djangorestframework-simplejwt
+django-cors-headers
+django-filter

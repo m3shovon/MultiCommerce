@@ -1,0 +1,86 @@
+{% load static %}
+<header class="header menu_fixed">
+    <div id="preloader"><div data-loader="circle-side"></div></div><!-- /Page Preload -->
+    <div id="logo">
+        <a href="{% url 'App_Hotel:home' %}">
+            <img src="{% static 'hotel_section/img/Icon/logo-rmbg.png' %}" width="100" height="100" alt="" class="logo_normal">
+            <img src="{% static 'hotel_section/img/Icon/logo.png' %}" width="100" height="100" alt="" class="logo_sticky">
+        </a>
+    </div>
+    <ul id="top_menu">
+        <li><a href="{% url 'App_Hotel:cart' %}" class="cart-menu-btn" title="Cart">
+            <!-- <strong>4</strong> -->
+        </a></li>
+
+
+        <li><a href="{% url 'App_Hotel:wishlist' %}" class="wishlist_bt_top" title="Your wishlist">Your wishlist</a></li>
+    </ul>
+    <!-- /top_menu -->
+    <a href="#menu" class="btn_mobile">
+        <div class="hamburger hamburger--spin" id="hamburger">
+            <div class="hamburger-box">
+                <div class="hamburger-inner"></div>
+            </div>
+        </div>
+    </a>
+    <nav id="menu" class="main-menu" style="margin: 0 50px;">
+        <ul>
+            <li><span><a href="{% url 'App_Hotel:home' %}">Home</a></span>
+                <!-- <ul>
+                    <li><a href="index.html">Home Default</a></li>	
+                </ul> -->
+            </li>
+            
+            <li><span><a href="{% url 'App_Hotel:hotel_list' %}">Find Hotels</a></span>
+                <!-- <ul>
+                    <li>
+                        <span><a href="#0">Hotel Grid</a></span>
+                        <ul>
+                            <li><a href="hotels-grid-sidebar.html">Hotel Grid Sidebar</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="hotel-detail.html">Hotel Detail</a></li>
+                </ul> -->
+            </li>
+            <li>
+                <span><a href="{% url 'App_Hotel:about' %}">About</a></span>
+            </li>
+            <li>
+                <span><a href="{% url 'App_Hotel:contact' %}">Contact Us</a></span>
+            </li>
+            <li>
+                <span><a href="{% url 'App_Hotel:faq' %}">FAQ</a></span>
+            </li>
+
+            <li><span><a href="#0">Profile</a></span>
+                <ul>
+                    {% if user.is_authenticated %}
+                        <li style="color: black;">
+                            <a href="{% url 'App_Auth:profile_view' %}" href="">{{ user.email }}</a>
+                        </li>    
+                        <li style="color: black;">
+                            <a href="{% url 'App_Hotel:cart' %}" href="">My Cart</a>
+                        </li>  
+                        <li style="color: black;">
+                            <a href="{% url 'App_Hotel:payments_list' %}" href="">All Payments</a>
+                        </li>      
+                        <li style="color: black;">
+                            <a href="{% url 'App_Hotel:wishlist' %}" href="">My Wishlist</a>
+                        </li>    
+                        <li style="color: black;"> 
+                            <a href="{% url 'App_Auth:signout' %}" href="">Signout</a>
+                        </li>
+                    {% else %}
+                        <li style="color: black;"> 
+                            <a href="{% url 'App_Auth:signin' %}"  class="login" title="Sign In">Sign In</a>
+                        </li>
+                        <li style="color: black;"> 
+                            <a href="{% url 'App_Auth:signup' %}"  class="login" title="Sign In">Sign Up</a>
+                        </li>
+                    {% endif %}
+
+                </ul>
+            </li>
+        </ul>
+    </nav>
+</header>

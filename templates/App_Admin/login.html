@@ -1,0 +1,147 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Web Booking App">
+    <meta name="author" content="M3S">
+    <title>Login | Admin Panel</title>
+
+    <!-- GOOGLE WEB FONT -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- BASE CSS -->
+    <link href="{% static 'hotel_section/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'hotel_section/css/vendors.css' %}" rel="stylesheet">
+
+    <!-- Custom Inline CSS for styling -->
+    <style>
+        body, html {
+            height: 100%;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #070505, #797e80);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+        }
+        
+        #login {
+            width: 100%;
+            max-width: 400px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+        }
+
+        aside {
+            text-align: center;
+        }
+
+        aside figure img {
+            max-width: 150px;
+            margin-bottom: 10px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #333;
+        }
+
+        .form-control {
+            height: 45px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            font-size: 0.9rem;
+        }
+
+        .btn_1 {
+            background: #0b0b0c;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            transition: background 0.3s;
+        }
+
+        .btn_1:hover {
+            background: #4a85c8;
+            cursor: pointer;
+        }
+
+        .copy {
+            font-size: 0.8rem;
+            color: #888;
+            margin-top: 20px;
+        }
+
+        .add_top_10 a {
+            color: #6b9be0;
+            text-decoration: underline;
+        }
+        
+        @media screen and (max-width: 480px) {
+            #login {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="login">
+        <aside>
+            <figure>
+                <a href="{% url 'App_Hotel:home' %}">
+                    <img src="{% static 'hotel_section/img/Icon/logo.png' %}" alt="Logo">
+                </a>
+            </figure>
+            <form method="post" autocomplete="off">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label>Your Email</label>
+                    <input class="form-control" type="email" name="username" value="{{ form.username.value|default_if_none:'' }}" placeholder="Enter your email">
+                </div>
+                <div class="form-group">
+                    <label>Your Password</label>
+                    <input class="form-control" type="password" name="password" value="{{ form.password.value|default_if_none:'' }}" placeholder="Enter your password">
+                </div>
+                <button type="submit" class="btn_1 rounded full-width">Login</button>
+                <div class="text-center add_top_10">Visit Main Website <strong><a href="{% url 'App_Hotel:home' %}" target="_blank" >Domabooking.com</a></strong></div>
+            </form>
+            <!-- <div class="copy">© M3S</div> -->
+        </aside>
+    </div>
+
+    <!-- Inline JavaScript for interactive effects -->
+    <script>
+        document.querySelector('.btn_1').addEventListener('mouseover', function() {
+            this.style.transform = 'scale(1.05)';
+        });
+        
+        document.querySelector('.btn_1').addEventListener('mouseout', function() {
+            this.style.transform = 'scale(1)';
+        });
+
+        // Preloader Effect
+        window.onload = function() {
+            document.getElementById('preloader').style.display = 'none';
+        };
+    </script>
+    
+</body>
+
+</html>

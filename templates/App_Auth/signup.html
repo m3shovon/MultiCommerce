@@ -1,0 +1,268 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="DOMBOOKING.com">
+    <meta name="author" content="m3s">
+    <title>Signup | DOMBOOKING</title>
+
+    <!-- GOOGLE WEB FONT -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- BASE CSS -->
+    <link href="{% static 'hotel_section/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'hotel_section/css/vendors.css' %}" rel="stylesheet">
+
+    <!-- Inline CSS for custom styling -->
+    <style>
+        body, html {
+            height: 100%;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f2f2f2, #a1c4fd);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+        }
+
+        #login {
+            width: 100%;
+            max-width: 400px;
+            background: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        aside figure img {
+            max-width: 100px;
+            margin-bottom: 15px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #333;
+            margin-bottom: 5px;
+            text-align: left; 
+            display: block;
+        }
+
+        .form-control {
+            height: 45px;
+            padding: 0 35px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            font-size: 0.9rem;
+        }
+
+        .form-control:focus {
+            border-color: #6a9ae0;
+            box-shadow: 0px 0px 5px rgba(106, 154, 224, 0.5);
+        }
+
+        .form-icon {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+            color: #6a9ae0;
+        }
+
+        .form-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .form-group-half {
+            width: 48%;
+            position: relative;
+        }
+
+        .btn_1 {
+            background: #6a9ae0;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            transition: background 0.3s;
+        }
+
+        .btn_1:hover {
+            background: #5a88d4;
+            cursor: pointer;
+        }
+
+        .text-danger {
+            font-size: 0.8rem;
+            color: #e74c3c;
+        }
+
+        .copy {
+            font-size: 0.8rem;
+            color: #888;
+            margin-top: 15px;
+        }
+
+        .add_top_10 a {
+            color: #6a9ae0;
+            text-decoration: underline;
+        }
+
+        #pass-info {
+            font-size: 0.8rem;
+            color: #6a9ae0;
+            text-align: left;
+            display: none;
+        }
+        .toggle-password {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #666;
+            font-size: 18px;
+        }
+
+        @media screen and (max-width: 480px) {
+            #login {
+                width: 90%;
+                padding: 20px;
+            }
+
+            .form-group-half {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="login">
+        <aside>
+            <figure>
+                <a href="{% url 'App_Hotel:home' %}">
+                    <img src="{% static 'hotel_section/img/Icon/logo.png' %}" alt="Logo">
+                </a>
+            </figure>
+            <form method="post" autocomplete="off">
+                {% csrf_token %}
+
+                <!-- Non-field errors -->
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                <!-- First Name and Last Name in a row -->
+                <div class="form-row">
+                    <div class="form-group-half">
+                        <!-- <label>First Name</label> -->
+                        <input class="form-control" type="text" name="first_name" value="{{ form.first_name.value|default_if_none:'' }}" placeholder="First Name">
+                        <i class="ti-user form-icon"></i>
+                        {% for error in form.first_name.errors %}
+                            <span class="text-danger">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+
+                    <div class="form-group-half"  style="position: relative;">
+                        <!-- <label>Last Name</label> -->
+                        <input class="form-control" type="text" name="last_name" value="{{ form.last_name.value|default_if_none:'' }}" placeholder="Last Name">
+                        <i class="ti-user form-icon"></i>
+                        {% for error in form.last_name.errors %}
+                            <span class="text-danger">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Email -->
+                <div class="form-group" style="position: relative;">
+                    <!-- <label>Email</label> -->
+                    <input class="form-control" type="email" name="email" value="{{ form.email.value|default_if_none:'' }}" placeholder="Enter your email">
+                    <i class="icon_mail_alt form-icon"></i>
+                    {% for error in form.email.errors %}
+                        <span class="text-danger">{{ error }}</span>
+                    {% endfor %}
+                </div>
+
+                <!-- Password Field with Toggle Icon -->
+                <div class="form-group" style="position: relative;">
+                    <input class="form-control" type="password" name="password1" id="password1" placeholder="Enter your password">
+                    <i class="icon_lock_alt form-icon"></i>
+                    <span class="toggle-password" onclick="togglePassword('password1')">
+                        <i id="toggle-icon1" class="ti-eye"></i>
+                    </span>
+                </div>
+
+                <!-- Confirm Password Field with Toggle Icon -->
+                <div class="form-group" style="position: relative;">
+                    <input class="form-control" type="password" name="password2" id="password2" placeholder="Confirm your password">
+                    <i class="icon_lock_alt form-icon"></i>
+                    <span class="toggle-password" onclick="togglePassword('password2')">
+                        <i id="toggle-icon2" class="ti-eye"></i>
+                    </span>
+                </div>
+
+                <div id="pass-info" class="clearfix">Password must be at least 8 characters, contain a number, and a symbol.</div>
+                
+                <!-- Submit Button -->
+                <button type="submit" class="btn_1 rounded full-width add_top_30">Register Now!</button>
+
+                <div class="text-center add_top_10">
+                    Already have an account? <strong><a href="{% url 'App_Auth:signin' %}">Sign In</a></strong>
+                </div>
+            </form>
+            <!-- <div class="copy">© M3S</div> -->
+        </aside>
+    </div>
+
+    <!-- JavaScript for interactive effects -->
+    <script>
+        document.getElementById("password1").addEventListener("focus", function() {
+            document.getElementById("pass-info").style.display = "block";
+        });
+        
+        document.getElementById("password1").addEventListener("blur", function() {
+            document.getElementById("pass-info").style.display = "none";
+        });
+
+        function togglePassword(inputId) {
+            const passwordField = document.getElementById(inputId);
+            const icon = document.getElementById(`toggle-icon${inputId === 'password1' ? '1' : '2'}`);
+
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+            } else {
+                passwordField.type = "password";
+            }
+
+            // Toggle the icon class between 'ti-eye' and 'ti-eye-off'
+            icon.classList.toggle("ti-eye");
+            icon.classList.toggle("ti-eye-off");
+        }
+    </script>
+
+    <!-- COMMON SCRIPTS -->
+    <script src="{% static 'hotel_section/js/common_scripts.js' %}"></script>
+    <script src="{% static 'hotel_section/js/main.js' %}"></script>
+    <script src="{% static 'hotel_section/phpmailer/validate.js' %}"></script>
+
+</body>
+
+</html>
