@@ -1,0 +1,24 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+
+{% block content %}
+
+<h1>Product List</h1>
+<ul>
+    {% for item in items %}
+        <li>
+            <a href="{% url 'App_Ecommerce:product_detail' item.slug %}">{{ item.title }}</a>
+            - {{ item.selling_price }} Taka
+        </li>
+    {% endfor %}
+</ul>
+
+<div>
+    <span>Page: </span>
+    {% for page in items.paginator.page_range %}
+        <a href="?page={{ page }}">{{ page }}</a>
+    {% endfor %}
+</div>
+
+{% endblock %}
