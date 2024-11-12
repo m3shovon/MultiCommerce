@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models import JSONField
 import uuid
 import os
+from django.utils.text import slugify
 
 # FUNCTIONS 
 def item_image_file_path(instance, filename):
@@ -72,6 +73,7 @@ class Items(models.Model):
     slug = models.CharField(max_length=255, unique=True, null=True, blank=True) 
     barcode = models.CharField(max_length=255, null=True, blank=True)
     remarks = models.TextField(null=True, blank=True)
+    product_details = models.TextField(null=True, blank=True)
     purchase_price = models.DecimalField(default=0, blank=True, max_digits=20, decimal_places=2)
     selling_price = models.DecimalField(default=0, blank=True, max_digits=20, decimal_places=2)
     discount_price = models.DecimalField(default=0, blank=True, max_digits=20, decimal_places=2)
@@ -79,22 +81,26 @@ class Items(models.Model):
     discount = models.DecimalField(max_digits=20, decimal_places=2, null=True, blank=True)
     Location = models.CharField(max_length=255, null=True, blank=True)
     action_details = models.CharField(max_length=255, null=True, blank=True)
+    is_available = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.title 
+        return f"{self.Category} | {self.title} " 
     
     def save(self, *args, **kwargs):
         # Generate a 12-digit barcode: 100000 + item ID
         if not self.barcode:
             super().save(*args, **kwargs)  # Save first to generate the ID
             self.barcode = f"{100000 + self.id:012d}"
+            
+        if not self.slug:
+            self.slug = slugify(self.title) 
         super().save(*args, **kwargs)
     
 class ItemVariation(models.Model):
     Item = models.ForeignKey(Items, on_delete=models.CASCADE, related_name="ItemVariations", related_query_name="ItemVariations")
-    AttributeTerm = models.ManyToManyField(AttributeTerm, blank=True, related_name="AttributeVariation", related_query_name="AttributeVariation")
+    # AttributeTerm = models.ManyToManyField(AttributeTerm, blank=True, related_name="AttributeVariation", related_query_name="AttributeVariation")
     Location = models.CharField(max_length=255, null=True, blank=True)
     Supplier = models.CharField(max_length=255, null=True, blank=True)
     name = models.CharField(max_length=255, null=True, blank=True)
@@ -105,26 +111,24 @@ class ItemVariation(models.Model):
     quantity = models.IntegerField(default=0)
     discount = models.DecimalField(max_digits=20, decimal_places=2, null=True, blank=True)
     action_details = models.CharField(max_length=255, null=True, blank=True)
+    color = models.ForeignKey(AttributeTerm, on_delete=models.SET_NULL, null=True, blank=True, related_name="color_variations")
+    size = models.ForeignKey(AttributeTerm, on_delete=models.SET_NULL, null=True, blank=True, related_name="size_variations")
+    product_details = models.TextField(null=True, blank=True)
+    is_available = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return str(self.Item) if self.Item else "No Item Assigned"
+        return f"{self.Item.title} - {self.color.name if self.color else 'No Color'} - {self.size.name if self.size else 'No Size'}"
+
 
     def save(self, *args, **kwargs):
-        # Generate a 12-digit barcode for ItemVariation
+        # Auto-generate barcode if not provided
         if not self.barcode:
-            super().save(*args, **kwargs)  # Save first to generate the ID
-            item_id_part = f"{100000 + self.Item.id:06d}"
+            color_name = self.color.name if self.color else "NoColor"
+            size_name = self.size.name if self.size else "NoSize"
+            self.barcode = f"{self.Item.id}-{color_name}-{size_name}".upper()
 
-            # Fetch up to 2 AttributeTerm IDs and use them for barcode generation
-            attribute_ids = list(self.AttributeTerm.values_list('id', flat=True)[:2])
-            if len(attribute_ids) < 2:
-                attribute_ids.extend([0] * (2 - len(attribute_ids)))  # Pad with zeros if less than 2
-
-            attribute_part = f"{attribute_ids[0]:03d}{attribute_ids[1]:03d}"
-            self.barcode = f"{item_id_part}{attribute_part}"
-        
         super().save(*args, **kwargs)
     
 class ItemImage(models.Model):

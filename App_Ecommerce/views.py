@@ -15,41 +15,92 @@ def home(request):
 # Product List View
 def product_list(request):
     items = Items.objects.filter(quantity__gt=0)
-    category = request.GET.get('category')
-    brand = request.GET.get('brand')
-    tag = request.GET.get('tag')
 
-    if category:
-        items = items.filter(Category__slug=category)
-    if brand:
-        items = items.filter(Brand__slug=brand)
-    if tag:
-        items = items.filter(Tag__slug=tag)
+    # Get filter parameters from the request
+    selected_categories = request.GET.getlist('category')
+    selected_brands = request.GET.getlist('brand')
+    selected_tags = request.GET.getlist('tag')
+    selected_attributes = request.GET.getlist('attribute')
+    min_price = request.GET.get('min_price')
+    max_price = request.GET.get('max_price')
 
-    paginator = Paginator(items, 12)  # Paginate with 12 items per page
+    # Apply filters based on request parameters
+    if selected_categories:
+        items = items.filter(Category__slug__in=selected_categories)
+    if selected_brands:
+        items = items.filter(Brand__slug__in=selected_brands)
+    if selected_tags:
+        items = items.filter(Tag__slug__in=selected_tags)
+    if selected_attributes:
+        items = items.filter(AttributeTerm__slug__in=selected_attributes)
+    if min_price:
+        items = items.filter(selling_price__gte=min_price)
+    if max_price:
+        items = items.filter(selling_price__lte=max_price)
+
+    # Pagination (12 items per page)
+    paginator = Paginator(items, 12)
     page_number = request.GET.get('page')
     page_items = paginator.get_page(page_number)
 
+    # Get filter options for the form
+    categories = Category.objects.all()
+    brands = Brand.objects.all()
+    tags = Tag.objects.all()
+    attributes = AttributeTerm.objects.all()
+
     context = {
         'items': page_items,
-        'category': category,
-        'brand': brand,
-        'tag': tag,
+        'categories': categories,
+        'brands': brands,
+        'tags': tags,
+        'attributes': attributes,
+        'selected_categories': selected_categories,
+        'selected_brands': selected_brands,
+        'selected_tags': selected_tags,
+        'selected_attributes': selected_attributes,
+        'min_price': min_price,
+        'max_price': max_price,
     }
     return render(request, 'App_Ecommerce/product_list.html', context)
 
 # Product Detail View
 def product_detail(request, slug):
+    # Fetch the item based on the slug
     item = get_object_or_404(Items, slug=slug)
-    variations = ItemVariation.objects.filter(Item=item)
-    related_items = Items.objects.filter(Category=item.Category).exclude(id=item.id)[:4]
+
+    # Fetch all variations for this item
+    variations = ItemVariation.objects.filter(Item=item, is_available=True)
+
+    # Group variations by color
+    color_variations = {}
+    for variation in variations:
+        color_name = variation.color.name if variation.color else "No Color"
+        size_name = variation.size.name if variation.size else "No Size"
+        
+        if color_name not in color_variations:
+            color_variations[color_name] = {
+                "color_id": variation.color.id if variation.color else None,
+                "sizes": []
+            }
+
+        color_variations[color_name]["sizes"].append({
+            "size_name": size_name,
+            "size_id": variation.size.id if variation.size else None,
+            "barcode": variation.barcode,
+            "purchase_price": variation.purchase_price,
+            "selling_price": variation.selling_price,
+            "discount_price": variation.discount_price,
+            "quantity": variation.quantity,
+            "is_available": variation.is_available,
+        })
 
     context = {
-        'item': item,
-        'variations': variations,
-        'related_items': related_items,
+        "item": item,
+        "color_variations": color_variations,
     }
-    return render(request, 'App_Ecommerce/product_details.html', context)
+
+    return render(request, "App_Ecommerce/product_details.html", context)
 
 # Category View
 def category_list(request, slug):

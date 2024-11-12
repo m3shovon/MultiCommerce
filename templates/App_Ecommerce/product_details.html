@@ -1,20 +1,327 @@
-<h1>{{ item.title }}</h1>
-<p>Price: {{ item.selling_price }} Taka</p>
-<p>SKU: {{ item.sku }}</p>
-<p>{{ item.remarks }}</p>
+{% extends 'layouts/base.html' %}
+{% load static %}
 
-<h3>Variations</h3>
-<ul>
-    {% for variation in variations %}
-        <li>{{ variation.AttributeTerm }} - {{ variation.selling_price }} Taka</li>
-    {% endfor %}
-</ul>
 
-<h3>Related Products</h3>
-<ul>
-    {% for related_item in related_items %}
-        <li>
-            <a href="{% url 'App_Ecommerce:product_detail' related_item.slug %}">{{ related_item.title }}</a>
-        </li>
+{% block content %}
+    <!-- breadcrumb start -->
+    <div class="breadcrumb-section">
+        <div class="container">
+            <h2>Gym Coords Set</h2>
+            <nav class="theme-breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="index-2.html">Home</a></li>
+                    <li class="breadcrumb-item">Product</li>
+                    <li class="breadcrumb-item active">Gym Coords Set</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    <!-- breadcrumb End -->
+
+    <!-- section start -->
+    <section>
+        <div class="collection-wrapper">
+            <div class="container">
+                <div class="collection-wrapper">
+                    <div class="row g-4">
+                        <div class="col-lg-4">
+                            <div class="product-slick">
+                                <div><img src="{% static 'assets/images/product-details/product/17.jpg' %}" alt=""
+                                        class="w-100 img-fluid blur-up lazyload"></div>
+                                <div><img src="{% static 'assets/images/product-details/product/17.jpg' %}" alt=""
+                                        class="w-100 img-fluid blur-up lazyload"></div>
+                                <div><img src="{% static 'assets/images/product-details/product/17.jpg' %}" alt=""
+                                        class="w-100 img-fluid blur-up lazyload"></div>
+                                <div><img src="{% static 'assets/images/product-details/product/17.jpg' %}" alt=""
+                                        class="w-100 img-fluid blur-up lazyload"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="slider-nav">
+                                        <div><img src="{% static 'assets/images/product-details/product/17.jpg' %}" alt=""
+                                                class="img-fluid blur-up lazyload"></div>
+                                        <div><img src="{% static 'assets/images/product-details/product/18.jpg' %}" alt=""
+                                                class="img-fluid blur-up lazyload"></div>
+                                        <div><img src="{% static 'assets/images/product-details/product/19.jpg' %}" alt=""
+                                                class="img-fluid blur-up lazyload"></div>
+                                        <div><img src="{% static 'assets/images/product-details/product/18.jpg' %}" alt=""
+                                                class="img-fluid blur-up lazyload"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="product-page-details product-description-box sticky-details mt-0">
+
+                                <h2 class="main-title">{{ item.title }} </h2>
+                                <!-- <div class="product-rating">
+                                    <div class="rating-list">
+                                        <i class="ri-star-fill"></i>
+                                        <i class="ri-star-fill"></i>
+                                        <i class="ri-star-fill"></i>
+                                        <i class="ri-star-fill"></i>
+                                        <i class="ri-star-line"></i>
+                                    </div>
+
+                                    <span class="divider">|</span>
+                                    <a href="#!">20 Reviews</a>
+                                </div> -->
+
+                                <div class="price-text">
+                                    <h3><span class="fw-normal">MRP:</span>
+                                        BDT {{item.discount_price}}
+                                    </h3><span>*VAT Inclusive*</span>
+                                </div>
+
+                                <div class="size-delivery-info flex-wrap">
+                                    <a href="#return" data-bs-toggle="modal" class=""><i class="ri-truck-line"></i>
+                                        Delivery &amp; Return </a>
+
+                                    <a href="#ask-question" class="" data-bs-toggle="modal"><i
+                                            class="ri-questionnaire-line"></i>
+                                        Ask a Question </a>
+
+                                </div>
+
+
+                                <div class="accordion accordion-flush product-accordion" id="accordionFlushExample">
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button collapsed" type="button"
+                                                data-bs-toggle="collapse" data-bs-target="#flush-collapseOne"
+                                                aria-expanded="false" aria-controls="flush-collapseOne">
+                                                Product Description </button>
+                                        </h2>
+                                        <div id="flush-collapseOne" class="accordion-collapse collapse"
+                                            data-bs-parent="#accordionFlushExample">
+                                            <div class="accordion-body">
+                                                <p>{{ item.product_details }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                                data-bs-target="#flush-collapseTwo" aria-expanded="false"
+                                                aria-controls="flush-collapseTwo">
+                                                Information </button>
+                                        </h2>
+                                        <div id="flush-collapseTwo" class="accordion-collapse collapse show"
+                                            data-bs-parent="#accordionFlushExample">
+                                            <div class="accordion-body">
+                                                <div class="bordered-box border-0 mt-0 pt-0">
+                                                    <h4 class="sub-title">
+                                                        product Info</h4>
+                                                    <ul class="shipping-info">
+                                                        <li><span>SKU: </span>{{ item.sku }} </li>
+                                                        <li><span>Category: </span>{{ item.Category }} </li>
+                                                        <li><span>Brand: </span>{{ item.Brand }} </li>
+                                                        <li><span>Tag: </span>{{ item.Tag }} </li>
+                                                             
+
+                                                        <!-- <li><span>Unit: </span>1
+                                                            Item </li> -->
+
+                                                        <!-- <li><span>Weight:
+                                                            </span>150 Gms </li> -->
+
+                                                        <!-- <li><span>Stock Status:
+                                                            </span>In stock </li> -->
+
+                                                        <!-- <li><span>Quantity:
+                                                            </span>40 Items Left </li> -->
+                                                    </ul>
+                                                </div>
+
+                                                <div class="bordered-box">
+                                                    <h4 class="sub-title">
+                                                        Delivery Details</h4>
+                                                    <ul class="delivery-details">
+                                                        <li><i class="ri-truck-line"></i> Your order is
+                                                            likely to reach you within 7 days. </li>
+
+                                                        <li><i class="ri-arrow-left-right-line"></i>
+                                                            Hassle free returns within 7 Days. </li>
+                                                    </ul>
+                                                </div>
+
+                                                <div class="dashed-border-box mb-0">
+                                                    <h4 class="sub-title">Guaranteed Safe Checkout</h4>
+                                                    <img class="img-fluid payment-img" alt=""
+                                                        src="../assets/images/product-details/payments.png">
+                                                </div>
+
+                                                <div class="dashed-border-box mb-0">
+                                                    <h4 class="sub-title">Secure Checkout</h4>
+                                                    <img class="img-fluid payment-img" alt=""
+                                                        src="../assets/images/product-details/secure_payments.png">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="product-page-details product-form-box product-right-box d-flex
+                                align-items-center flex-column my-0">
+                                <!-- Color Selection -->
+                                <h4 class="sub-title">Color:</h4>
+                                <div class="variation-box color-box">
+                                    <ul class="image-box image">
+                                        {% for color, data in color_variations.items %}
+                                            <li class="color-option" data-color="{{ color }}" data-color-id="{{ data.color_id }}">
+                                                <a href="javascript:void(0);">
+                                                    <img src="../assets/images/product-details/product/{{ color|slugify }}.jpg" alt="{{ color }}">
+                                                </a>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+
+                                <!-- Size Selection -->
+                                <h4 class="sub-title">Size:</h4>
+                                <div class="variation-box size-box">
+                                    <ul class="size-list">
+                                        {% for size in data.sizes %}
+                                            <li>
+                                                Size: {{ size.size_name }}<br>
+                                                <!-- Barcode: {{ size.barcode }}<br> -->
+                                                <!-- Purchase Price: {{ size.purchase_price }}<br> -->
+                                                <!-- Selling Price: {{ size.selling_price }}<br> -->
+                                                <!-- Discount Price: {{ size.discount_price }}<br> -->
+                                                Quantity: {{ size.quantity }}<br>
+                                                Available: {{ size.is_available }}
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+
+                                <div class="product-buttons">
+                                    <div class="qty-section">
+                                        <div class="qty-box">
+                                            <div class="input-group">
+                                                <span class="input-group-prepend">
+                                                    <button type="button" class="btn quantity-left-minus"
+                                                        data-type="minus" data-field="">
+                                                        <i class="ri-arrow-left-s-line"></i>
+                                                    </button>
+                                                </span>
+                                                <input type="text" name="quantity" class="form-control input-number"
+                                                    value="1">
+                                                <span class="input-group-prepend">
+                                                    <button type="button" class="btn quantity-right-plus"
+                                                        data-type="plus" data-field="">
+                                                        <i class="ri-arrow-right-s-line"></i>
+                                                    </button>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="product-buttons">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <button class="btn btn-animation btn-solid hover-solid scroll-button disabled"
+                                            type="button"> Out Of Stock
+                                        </button>
+                                        <a href="#!" class="btn btn-solid buy-button disabled">Buy Now
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <div class="left-progressbar w-100">
+                                    <h6>Please Hurry Only 10 Left In Stock</h6>
+                                    <!-- <div role="progressbar" class="progress">
+                                        <div class="progress-bar" style="width: 100%;">
+                                        </div>
+                                    </div> -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Section ends -->
+
+
+    <h1>{{ item.title }}</h1>
+    <p>{{ item.remarks }}</p>
+    <p>Price: {{ item.selling_price }}</p>
+    
+    <h2>Available Variations:</h2>
+    {% for color, data in color_variations.items %}
+        <h3>Color: {{ color }}</h3>
+        <ul>
+            {% for size in data.sizes %}
+                <li>
+                    Size: {{ size.size_name }}<br>
+                    <!-- Barcode: {{ size.barcode }}<br> -->
+                    <!-- Purchase Price: {{ size.purchase_price }}<br> -->
+                    <!-- Selling Price: {{ size.selling_price }}<br> -->
+                    <!-- Discount Price: {{ size.discount_price }}<br> -->
+                    Quantity: {{ size.quantity }}<br>
+                    Available: {{ size.is_available }}
+                </li>
+            {% endfor %}
+        </ul>
     {% endfor %}
-</ul>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Get all color options and size list container
+            const colorOptions = document.querySelectorAll(".color-option");
+            const sizeList = document.querySelector(".size-list");
+    
+            // Data from Django context (color variations)
+            const colorVariations = {{ color_variations|safe }};
+    
+            // Function to update size options based on selected color
+            function updateSizeOptions(selectedColor) {
+                // Clear existing size options
+                sizeList.innerHTML = "";
+    
+                // Get sizes for the selected color
+                const sizes = colorVariations[selectedColor]?.sizes || [];
+    
+                // Populate size options
+                sizes.forEach(size => {
+                    const li = document.createElement("li");
+                    li.className = "size-option";
+                    li.setAttribute("data-size-id", size.size_id);
+                    li.innerHTML = `
+                        <a href="javascript:void(0);">
+                            ${size.size_name} - ${size.selling_price} Taka
+                        </a>
+                    `;
+                    sizeList.appendChild(li);
+                });
+            }
+    
+            // Event listener for color selection
+            colorOptions.forEach(option => {
+                option.addEventListener("click", function () {
+                    // Remove active class from all color options
+                    colorOptions.forEach(opt => opt.classList.remove("active"));
+    
+                    // Add active class to the selected color option
+                    option.classList.add("active");
+    
+                    // Get the selected color name
+                    const selectedColor = option.getAttribute("data-color");
+    
+                    // Update size options based on the selected color
+                    updateSizeOptions(selectedColor);
+                });
+            });
+    
+            // Initialize with the first color option selected
+            if (colorOptions.length > 0) {
+                colorOptions[0].click();
+            }
+        });
+    </script>
+
+{% endblock %}
