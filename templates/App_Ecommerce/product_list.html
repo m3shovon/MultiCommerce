@@ -11,9 +11,9 @@
             <nav class="theme-breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="index-2.html">Home</a>
+                        <a href="{% url 'App_Ecommerce:home' %}">Home</a>
                     </li>
-                    <li class="breadcrumb-item active">4 Grid</li>
+                    <li class="breadcrumb-item active">Product List</li>
                 </ol>
             </nav>
         </div>
@@ -159,7 +159,7 @@
                                     </div>
                                     
                                     <button type="submit" class="btn btn-primary">Apply Filters</button>
-                                    <a type="btn" href="{% url 'App_Ecommerce:product_list' %}" class="btn btn-danger">Reset Form</a>
+                                    <a type="btn" href="{% url 'App_Ecommerce:product_list' %}" class="btn btn-danger">Reset</a>
                                 </form>
                                 </div>
                             </div>
@@ -168,12 +168,12 @@
                     </div>
                     <div class="collection-content col-xl-9 col-lg-8">
                         <div class="page-main-content">
-                            <div class="top-banner-wrapper">
+                            <!-- <div class="top-banner-wrapper">
                                 <a href="#!">
                                     <img src="{% static 'assets/images/inner-page/banner/1.png' %}"
                                         class="img-fluid blur-up lazyload" alt="">
                                 </a>
-                            </div>
+                            </div> -->
                             <button class="filter-btn btn"><i class="ri-arrow-left-s-line"></i> Filter
                             </button>
                             <div class="collection-product-wrapper">

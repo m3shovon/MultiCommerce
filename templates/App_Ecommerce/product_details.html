@@ -3,15 +3,75 @@
 
 
 {% block content %}
+<style>
+    /* Basic styling */
+    body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+    }
+
+    h1 {
+        color: #333;
+    }
+
+    .color-options {
+        display: flex;
+        gap: 10px;
+    }
+
+    .color-box {
+        padding: 10px;
+        border: 2px solid #ccc;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .color-box.active {
+        border-color: #007bff;
+        background-color: #e0f0ff;
+    }
+
+    .size-options {
+        margin-top: 20px;
+    }
+
+    .size-list {
+        display: none;
+    }
+
+    .size-list.active {
+        display: block;
+    }
+
+    .size-box {
+        padding: 10px;
+        margin: 5px 0;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .size-box:hover {
+        background-color: #f0f0f0;
+    }
+
+    .size-box.selected {
+        border-color: #28a745;
+        background-color: #e6ffe6;
+    }
+</style>
+
     <!-- breadcrumb start -->
     <div class="breadcrumb-section">
         <div class="container">
-            <h2>Gym Coords Set</h2>
+            <h2>{{ item.title }}</h2>
             <nav class="theme-breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="index-2.html">Home</a></li>
-                    <li class="breadcrumb-item">Product</li>
-                    <li class="breadcrumb-item active">Gym Coords Set</li>
+                    <li class="breadcrumb-item"><a href="{% url 'App_Ecommerce:home' %}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'App_Ecommerce:product_list' %}">{{ item.Category }}</a></li>
+                    <li class="breadcrumb-item active">{{ item.title }}</li>
                 </ol>
             </nav>
         </div>
@@ -148,13 +208,13 @@
                                                 <div class="dashed-border-box mb-0">
                                                     <h4 class="sub-title">Guaranteed Safe Checkout</h4>
                                                     <img class="img-fluid payment-img" alt=""
-                                                        src="../assets/images/product-details/payments.png">
+                                                        src="{% static 'assets/images/product-details/payments.png' %}">
                                                 </div>
 
                                                 <div class="dashed-border-box mb-0">
                                                     <h4 class="sub-title">Secure Checkout</h4>
                                                     <img class="img-fluid payment-img" alt=""
-                                                        src="../assets/images/product-details/secure_payments.png">
+                                                        src="{% static 'assets/images/product-details/secure_payments.png' %}">
                                                 </div>
                                             </div>
                                         </div>
@@ -166,52 +226,51 @@
                             <div class="product-page-details product-form-box product-right-box d-flex
                                 align-items-center flex-column my-0">
                                 <!-- Color Selection -->
-                                <h4 class="sub-title">Color:</h4>
-                                <div class="variation-box color-box">
-                                    <ul class="image-box image">
-                                        {% for color, data in color_variations.items %}
-                                            <li class="color-option" data-color="{{ color }}" data-color-id="{{ data.color_id }}">
-                                                <a href="javascript:void(0);">
-                                                    <img src="../assets/images/product-details/product/{{ color|slugify }}.jpg" alt="{{ color }}">
-                                                </a>
-                                            </li>
-                                        {% endfor %}
-                                    </ul>
+                                <h2>Select a Color:</h2>
+                                <div class="color-options">
+                                    {% for color, data in color_variations.items %}
+                                        <div class="color-box" data-color="{{ color }}" data-color-id="{{ data.color_id }}">
+                                            {{ color }}
+                                        </div>
+                                    {% endfor %}
                                 </div>
 
-                                <!-- Size Selection -->
-                                <h4 class="sub-title">Size:</h4>
-                                <div class="variation-box size-box">
-                                    <ul class="size-list">
-                                        {% for size in data.sizes %}
-                                            <li>
-                                                Size: {{ size.size_name }}<br>
-                                                <!-- Barcode: {{ size.barcode }}<br> -->
-                                                <!-- Purchase Price: {{ size.purchase_price }}<br> -->
-                                                <!-- Selling Price: {{ size.selling_price }}<br> -->
-                                                <!-- Discount Price: {{ size.discount_price }}<br> -->
-                                                Quantity: {{ size.quantity }}<br>
-                                                Available: {{ size.is_available }}
-                                            </li>
-                                        {% endfor %}
-                                    </ul>
+                                <div class="size-options">
+                                    {% for color, data in color_variations.items %}
+                                        <div class="size-list" id="size-list-{{ data.color_id }}">
+                                            <h3>Available Sizes for {{ color }}:</h3>
+                                            <ul>
+                                                {% for size in data.sizes %}
+                                                    <li class="size-box" 
+                                                        data-size-id="{{ size.size_id }}" 
+                                                        data-quantity="{{ size.quantity }}" 
+                                                        data-is-available="{{ size.is_available }}">
+                                                        Size: {{ size.size_name }}<br>
+                                                        {% if size.is_available %}
+                                                            <span>In Stock: {{ size.quantity }}</span>
+                                                        {% else %}
+                                                            <span style="color: red;">Out of Stock</span>
+                                                        {% endif %}
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    {% endfor %}
                                 </div>
 
+                                <!-- Quantity Input -->
                                 <div class="product-buttons">
                                     <div class="qty-section">
                                         <div class="qty-box">
                                             <div class="input-group">
                                                 <span class="input-group-prepend">
-                                                    <button type="button" class="btn quantity-left-minus"
-                                                        data-type="minus" data-field="">
+                                                    <button type="button" class="btn quantity-left-minus" data-type="minus">
                                                         <i class="ri-arrow-left-s-line"></i>
                                                     </button>
                                                 </span>
-                                                <input type="text" name="quantity" class="form-control input-number"
-                                                    value="1">
+                                                <input type="text" name="quantity" class="form-control input-number" value="1" id="quantity-input" disabled>
                                                 <span class="input-group-prepend">
-                                                    <button type="button" class="btn quantity-right-plus"
-                                                        data-type="plus" data-field="">
+                                                    <button type="button" class="btn quantity-right-plus" data-type="plus">
                                                         <i class="ri-arrow-right-s-line"></i>
                                                     </button>
                                                 </span>
@@ -219,21 +278,23 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <!-- Action Buttons -->
                                 <div class="product-buttons">
                                     <div class="d-flex align-items-center gap-3">
-                                        <button class="btn btn-animation btn-solid hover-solid scroll-button disabled"
-                                            type="button"> Out Of Stock
+                                        <button id="add-to-cart-btn" class="btn btn-animation btn-solid hover-solid scroll-button disabled" type="button">
+                                            Add to Cart
                                         </button>
-                                        <a href="#!" class="btn btn-solid buy-button disabled">Buy Now
-                                        </a>
+                                        <a href="#!" id="buy-now-btn" class="btn btn-solid buy-button disabled">Buy Now</a>
                                     </div>
                                 </div>
 
+                                <!-- Stock Info -->
                                 <div class="left-progressbar w-100">
-                                    <h6>Please Hurry Only 10 Left In Stock</h6>
+                                    <h6 id="stock-info">Please select a size to see available stock</h6>
+                                    <!-- Progress bar (optional, can be added later if needed) -->
                                     <!-- <div role="progressbar" class="progress">
-                                        <div class="progress-bar" style="width: 100%;">
-                                        </div>
+                                        <div class="progress-bar" style="width: 100%;"></div>
                                     </div> -->
                                 </div>
                             </div>
@@ -245,81 +306,479 @@
     </section>
     <!-- Section ends -->
 
+    <!-- product-tab starts -->
+    <section class="tab-product m-0">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12 col-lg-12">
+                    <ul class="nav nav-tabs nav-material" id="top-tab" role="tablist">
+                        <li class="nav-item"><a class="nav-link active" id="top-home-tab" data-bs-toggle="tab"
+                                href="#top-home" role="tab" aria-selected="true"><i
+                                    class="icofont icofont-ui-home"></i>Description</a>
+                        </li>
 
-    <h1>{{ item.title }}</h1>
-    <p>{{ item.remarks }}</p>
-    <p>Price: {{ item.selling_price }}</p>
-    
-    <h2>Available Variations:</h2>
-    {% for color, data in color_variations.items %}
-        <h3>Color: {{ color }}</h3>
-        <ul>
-            {% for size in data.sizes %}
-                <li>
-                    Size: {{ size.size_name }}<br>
-                    <!-- Barcode: {{ size.barcode }}<br> -->
-                    <!-- Purchase Price: {{ size.purchase_price }}<br> -->
-                    <!-- Selling Price: {{ size.selling_price }}<br> -->
-                    <!-- Discount Price: {{ size.discount_price }}<br> -->
-                    Quantity: {{ size.quantity }}<br>
-                    Available: {{ size.is_available }}
-                </li>
-            {% endfor %}
-        </ul>
-    {% endfor %}
+                        <li class="nav-item"><a class="nav-link" id="review-top-tab" data-bs-toggle="tab"
+                                href="#top-review" role="tab" aria-selected="false"><i
+                                    class="icofont icofont-contacts"></i>Review</a>
+                        </li>
+                        <li class="nav-item"><a class="nav-link" id="contact-top-tab" data-bs-toggle="tab"
+                                href="#top-contact" role="tab" aria-selected="false"><i
+                                    class="icofont icofont-contacts"></i>Q & A</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content nav-material" id="top-tabContent">
+                        <div class="tab-pane fade show active" id="top-home" role="tabpanel"
+                            aria-labelledby="top-home-tab">
+                            <div class="product-tab-description">
+                                <div class="part">
+                                    <p>The Model is wearing a white blouse from our stylist's
+                                        collection, see the image for a mock-up of what the actual
+                                        blouse would look like.it has text written on it in a black
+                                        cursive language which looks great on a white color.</p>
+                                </div>
+                                <div class="part">
+                                    <h5 class="inner-title">fabric:</h5>
+                                    <p>Art silk is manufactured by synthetic fibres like rayon. It's
+                                        light in weight and is soft on the skin for comfort in
+                                        summers.Art silk is manufactured by synthetic fibres like rayon.
+                                        It's light in weight and is soft on the skin for comfort in
+                                        summers.</p>
+                                </div>
+                                <div class="part">
+                                    <h5 class="inner-title">size & fit:</h5>
+                                    <p>The model (height 5'8") is wearing a size S</p>
+                                </div>
+                                <div class="part">
+                                    <h5 class="inner-title">Material & Care:</h5>
+                                    <p>Top fabric: pure cotton</p>
+                                    <p>Bottom fabric: pure cotton</p>
+                                    <p>Hand-wash</p>
+                                </div>
+                            </div>
+                        </div>
 
+
+                        <div class="tab-pane fade" id="top-review" role="tabpanel" aria-labelledby="review-top-tab">
+                            <div class="single-product-tables">
+                                <div class="row g-3 w-100">
+                                    <div class="col-xl-5">
+                                        <div class="product-rating-box">
+                                            <div class="row">
+                                                <div class="col-xl-12">
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <h2 class="mb-0 rating-number">4.00</h2>
+                                                        <div>
+                                                            <span class="base-rating">
+                                                                <i class="ri-star-s-fill"></i>
+                                                                <i class="ri-star-s-fill"></i>
+                                                                <i class="ri-star-s-fill"></i>
+                                                                <i class="ri-star-s-fill"></i>
+                                                                <i class="ri-star-s-line"></i>
+                                                            </span>
+                                                            <h4 class="rating-count">Based on 25 Rating</h4>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="review-title-2">
+                                                        <h4>Review this product
+                                                        </h4>
+                                                        <p>Let other customers know what you think</p>
+                                                        <ul class="product-rating-list">
+                                                            <li>
+                                                                <div class="rating-product">
+                                                                    <h5>5<i class="ri-star-fill"></i></h5>
+                                                                    <div class="progress" role="progressbar"
+                                                                        aria-label="Basic example" aria-valuenow="100"
+                                                                        aria-valuemin="0" aria-valuemax="100">
+                                                                        <div class="progress-bar" style="width: 90%">
+                                                                        </div>
+                                                                    </div>
+                                                                    <h5 class="total">9 </h5>
+                                                                </div>
+                                                            </li>
+                                                            <li>
+                                                                <div class="rating-product">
+                                                                    <h5>4<i class="ri-star-fill"></i></h5>
+                                                                    <div class="progress" role="progressbar"
+                                                                        aria-label="Basic example" aria-valuenow="100"
+                                                                        aria-valuemin="0" aria-valuemax="100">
+                                                                        <div class="progress-bar" style="width: 75%">
+                                                                        </div>
+                                                                    </div>
+                                                                    <h5 class="total">7
+                                                                    </h5>
+                                                                </div>
+                                                            </li>
+                                                            <li>
+                                                                <div class="rating-product">
+                                                                    <h5>3<i class="ri-star-fill"></i></h5>
+                                                                    <div class="progress" role="progressbar"
+                                                                        aria-label="Basic example" aria-valuenow="100"
+                                                                        aria-valuemin="0" aria-valuemax="100">
+                                                                        <div class="progress-bar" style="width: 50%">
+                                                                        </div>
+                                                                    </div>
+                                                                    <h5 class="total">5
+                                                                    </h5>
+                                                                </div>
+                                                            </li>
+                                                            <li>
+                                                                <div class="rating-product">
+                                                                    <h5>2<i class="ri-star-fill"></i></h5>
+                                                                    <div class="progress" role="progressbar"
+                                                                        aria-label="Basic example" aria-valuenow="100"
+                                                                        aria-valuemin="0" aria-valuemax="100">
+                                                                        <div class="progress-bar" style="width: 25%">
+                                                                        </div>
+                                                                    </div>
+                                                                    <h5 class="total">3
+                                                                    </h5>
+                                                                </div>
+                                                            </li>
+                                                            <li>
+                                                                <div class="rating-product">
+                                                                    <h5>1<i class="ri-star-fill"></i></h5>
+                                                                    <div class="progress" role="progressbar"
+                                                                        aria-label="Basic example" aria-valuenow="100"
+                                                                        aria-valuemin="0" aria-valuemax="100">
+                                                                        <div class="progress-bar" style="width: 10%">
+                                                                        </div>
+                                                                    </div>
+                                                                    <h5 class="total">1
+                                                                    </h5>
+                                                                </div>
+                                                            </li>
+                                                        </ul>
+                                                        <button class="btn" data-bs-toggle="modal"
+                                                            data-bs-target="#write-review" type="submit">
+                                                            Write Review
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-7">
+                                        <div class="review-people">
+                                            <ul class="review-list">
+                                                <li>
+                                                    <div class="people-box">
+                                                        <div>
+                                                            <div class="people-image people-text">
+                                                                <div class="user-round">
+                                                                    <h4>J</h4>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="people-comment">
+                                                            <div class="people-name">
+                                                                <a href="#!" class="name">John Due</a>
+                                                                <h6 class="text-content"> 10 Aug 2024 11:05:AM </h6>
+                                                                <ul class="product-rating">
+                                                                    <li class="star-rating">
+                                                                        <i class="ri-star-fill"></i>
+                                                                    </li>
+                                                                    <li class="star-rating">
+                                                                        <i class="ri-star-fill"></i>
+                                                                    </li>
+                                                                    <li class="star-rating">
+                                                                        <i class="ri-star-fill"></i>
+                                                                    </li>
+                                                                    <li class="star-rating">
+                                                                        <i class="ri-star-line"></i>
+                                                                    </li>
+                                                                    <li class="star-rating">
+                                                                        <i class="ri-star-line"></i>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                            <div class="reply">
+                                                                <p>"Wow! This fashion product exceeded all my
+                                                                    expectations! From the moment I opened the
+                                                                    package, I could tell it was something special.
+                                                                    The quality of the materials is outstanding.
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="people-box">
+                                                        <div>
+                                                            <div class="people-image people-text">
+                                                                <div class="user-round">
+                                                                    <h4>R</h4>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="people-comment">
+                                                            <div class="people-name">
+                                                                <a href="#!" class="name">Rhoda Mayer</a>
+                                                                <h6 class="text-content"> 10 Aug 2024 11:05:AM
+                                                                </h6>
+                                                                <ul class="product-rating">
+                                                                    <li class="star-rating">
+                                                                        <i class="ri-star-fill"></i>
+                                                                    </li>
+                                                                    <li class="star-rating">
+                                                                        <i class="ri-star-fill"></i>
+                                                                    </li>
+                                                                    <li class="star-rating">
+                                                                        <i class="ri-star-fill"></i>
+                                                                    </li>
+                                                                    <li class="star-rating">
+                                                                        <i class="ri-star-fill"></i>
+                                                                    </li>
+                                                                    <li class="star-rating">
+                                                                        <i class="ri-star-fill"></i>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                            <div class="reply">
+                                                                <p>"Nice the attention to detail in the
+                                                                    craftsmanship is truly impressive. Not only
+                                                                    does
+                                                                    it look fabulous, but it feels incredibly
+                                                                    comfortable too. I've received so many
+                                                                    compliments whenever I wear it!
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="people-box">
+                                                        <div>
+                                                            <div class="people-image people-text">
+                                                                <div class="user-round">
+                                                                    <h4>J</h4>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="people-comment">
+                                                            <div class="people-name">
+                                                                <a href="#!" class="name">Jack Deo</a>
+                                                                <h6 class="text-content"> 10 Aug 2024 11:05:AM </h6>
+                                                                <ul class="product-rating">
+                                                                    <li class="star-rating">
+                                                                        <i class="ri-star-fill"></i>
+                                                                    </li>
+                                                                    <li class="star-rating">
+                                                                        <i class="ri-star-fill"></i>
+                                                                    </li>
+                                                                    <li class="star-rating">
+                                                                        <i class="ri-star-fill"></i>
+                                                                    </li>
+                                                                    <li class="star-rating">
+                                                                        <i class="ri-star-fill"></i>
+                                                                    </li>
+                                                                    <li class="star-rating">
+                                                                        <i class="ri-star-line"></i>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                            <div class="reply">
+                                                                <p>"The product boasts impressive craftsmanship,
+                                                                    meticulous attention to detail, and a stunning
+                                                                    appearance, resulting in a comfortable feel and
+                                                                    numerous compliments."
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="top-contact" role="tabpanel" aria-labelledby="contact-top-tab">
+                            <div class="post-question-box">
+                                <h4>Have Doubts Regarding This Product ? <a href="#ask-question"
+                                        data-bs-toggle="modal">Post
+                                        Your Question</a>
+                                </h4>
+                            </div>
+                            <div class="question-answer">
+                                <ul>
+                                    <li>
+                                        <div class="question-box">
+                                            <h5>Q1</h5>
+                                            <h6 class="font-weight-bold que">Does
+                                                the dress offer any UV
+                                                protection?</h6>
+                                            <ul class="link-dislike-box">
+                                                <li><a href="#!"><span><i class="ri-thumb-up-fill"></i>
+                                                            0</span></a></li>
+                                                <li><a href="#!"><span><i class="ri-thumb-down-fill"></i>
+                                                            0</span></a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="answer-box">
+                                            <div class="answer-box">
+                                                <h5>A1</h5>
+                                                <p class="ans">Yes, the dress
+                                                    offers UV protection. It blocks
+                                                    harmful UV rays, providing an additional layer of sun
+                                                    safety. </p>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="question-box">
+                                            <h5>Q2</h5>
+                                            <h6 class="font-weight-bold que">Are
+                                                there any pockets, and if so,
+                                                how many and where are they located?</h6>
+                                            <ul class="link-dislike-box">
+                                                <li><a href="#!"><span><i class="ri-thumb-up-fill"></i>
+                                                            0</span></a></li>
+                                                <li><a href="#!"><span><i class="ri-thumb-down-fill"></i>
+                                                            0</span></a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="answer-box">
+                                            <div class="answer-box">
+                                                <h5>A2</h5>
+                                                <p class="ans">Yes, there are
+                                                    pockets. There are two pockets,
+                                                    one on each side of the garment. </p>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="question-box">
+                                            <h5>Q3</h5>
+                                            <h6 class="font-weight-bold que">Is the
+                                                fabric breathable and
+                                                quick-drying?</h6>
+                                            <ul class="link-dislike-box">
+                                                <li><a href="#!"><span><i class="ri-thumb-up-fill"></i>
+                                                            0</span></a></li>
+                                                <li><a href="#!"><span><i class="ri-thumb-down-fill"></i>
+                                                            0</span></a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="answer-box">
+                                            <div class="answer-box">
+                                                <h5>A3</h5>
+                                                <p class="ans">Yes, the fabric is
+                                                    breathable, allowing for
+                                                    excellent airflow. Additionally, it is quick-drying,
+                                                    ensuring comfort during and after
+                                                    activities. </p>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- product-tab ends -->
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            // Get all color options and size list container
-            const colorOptions = document.querySelectorAll(".color-option");
-            const sizeList = document.querySelector(".size-list");
+        // JavaScript to handle color and size selection, quantity validation, and button state
     
-            // Data from Django context (color variations)
-            const colorVariations = {{ color_variations|safe }};
+        const colorBoxes = document.querySelectorAll('.color-box');
+        const sizeLists = document.querySelectorAll('.size-list');
+        const sizeBoxes = document.querySelectorAll('.size-box');
+        const quantityInput = document.getElementById('quantity-input');
+        const addToCartBtn = document.getElementById('add-to-cart-btn');
+        const buyNowBtn = document.getElementById('buy-now-btn');
     
-            // Function to update size options based on selected color
-            function updateSizeOptions(selectedColor) {
-                // Clear existing size options
-                sizeList.innerHTML = "";
+        let selectedColorId = null;
+        let selectedSizeId = null;
+        let maxQuantity = 0;
     
-                // Get sizes for the selected color
-                const sizes = colorVariations[selectedColor]?.sizes || [];
+        // Handle color selection
+        colorBoxes.forEach((colorBox) => {
+            colorBox.addEventListener('click', () => {
+                // Remove active class from all color boxes
+                colorBoxes.forEach(box => box.classList.remove('active'));
+                // Hide all size lists
+                sizeLists.forEach(list => list.classList.remove('active'));
     
-                // Populate size options
-                sizes.forEach(size => {
-                    const li = document.createElement("li");
-                    li.className = "size-option";
-                    li.setAttribute("data-size-id", size.size_id);
-                    li.innerHTML = `
-                        <a href="javascript:void(0);">
-                            ${size.size_name} - ${size.selling_price} Taka
-                        </a>
-                    `;
-                    sizeList.appendChild(li);
-                });
-            }
+                // Add active class to the selected color box
+                colorBox.classList.add('active');
     
-            // Event listener for color selection
-            colorOptions.forEach(option => {
-                option.addEventListener("click", function () {
-                    // Remove active class from all color options
-                    colorOptions.forEach(opt => opt.classList.remove("active"));
+                // Show the corresponding size list
+                selectedColorId = colorBox.getAttribute('data-color-id');
+                const sizeList = document.getElementById(`size-list-${selectedColorId}`);
+                if (sizeList) {
+                    sizeList.classList.add('active');
+                }
     
-                    // Add active class to the selected color option
-                    option.classList.add("active");
-    
-                    // Get the selected color name
-                    const selectedColor = option.getAttribute("data-color");
-    
-                    // Update size options based on the selected color
-                    updateSizeOptions(selectedColor);
-                });
+                // Reset size and quantity selection
+                selectedSizeId = null;
+                maxQuantity = 0;
+                quantityInput.value = 1;
+                quantityInput.disabled = true;
+                addToCartBtn.classList.add('disabled');
+                buyNowBtn.classList.add('disabled');
             });
+        });
     
-            // Initialize with the first color option selected
-            if (colorOptions.length > 0) {
-                colorOptions[0].click();
+        // Handle size selection
+        sizeBoxes.forEach((sizeBox) => {
+            sizeBox.addEventListener('click', () => {
+                // Remove selected class from all size boxes
+                sizeBoxes.forEach(box => box.classList.remove('selected'));
+    
+                // Add selected class to the clicked size box
+                sizeBox.classList.add('selected');
+    
+                // Get the selected size details
+                selectedSizeId = sizeBox.getAttribute('data-size-id');
+                maxQuantity = parseInt(sizeBox.getAttribute('data-quantity'));
+                const isAvailable = sizeBox.getAttribute('data-is-available') === 'true';
+    
+                // Enable quantity input and set its max value
+                if (isAvailable && maxQuantity > 0) {
+                    quantityInput.disabled = false;
+                    addToCartBtn.classList.remove('disabled');
+                    buyNowBtn.classList.remove('disabled');
+                } else {
+                    quantityInput.disabled = true;
+                    addToCartBtn.classList.add('disabled');
+                    buyNowBtn.classList.add('disabled');
+                }
+    
+                // Reset the quantity input
+                quantityInput.value = 1;
+            });
+        });
+    
+        // Handle quantity increment/decrement
+        document.querySelector('.quantity-left-minus').addEventListener('click', () => {
+            let quantity = parseInt(quantityInput.value);
+            if (quantity > 1) {
+                quantityInput.value = quantity - 1;
+            }
+        });
+    
+        document.querySelector('.quantity-right-plus').addEventListener('click', () => {
+            let quantity = parseInt(quantityInput.value);
+            if (quantity < maxQuantity) {
+                quantityInput.value = quantity + 1;
+            }
+        });
+    
+        // Prevent quantity input from exceeding max quantity
+        quantityInput.addEventListener('input', () => {
+            let quantity = parseInt(quantityInput.value);
+            if (quantity > maxQuantity) {
+                quantityInput.value = maxQuantity;
+            } else if (quantity < 1) {
+                quantityInput.value = 1;
             }
         });
     </script>
