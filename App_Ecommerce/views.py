@@ -1,6 +1,9 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Items, Category, Brand, Tag, AttributeTerm, ItemVariation
 from django.core.paginator import Paginator
+from django.http import JsonResponse
+from django.shortcuts import redirect
+from django.urls import reverse
 
 # Home Page
 def home(request):
@@ -112,3 +115,19 @@ def category_list(request, slug):
         'items': items,
     }
     return render(request, 'App_Ecommerce/category_list.html', context)
+
+
+
+
+def checkout(request):
+    # if request.method == "POST":
+    #     color_id = request.POST.get('color_id')
+    #     size_id = request.POST.get('size_id')
+    #     quantity = int(request.POST.get('quantity', 1))
+
+    #     # Logic for saving order details and handling checkout
+
+    #     # Redirect to checkout page
+    #     return JsonResponse({"checkout_url": reverse('App_Ecommerce:checkout')})
+    # return redirect("App_Ecommerce:product_list")
+    return render(request, 'App_Ecommerce/checkout.html')
