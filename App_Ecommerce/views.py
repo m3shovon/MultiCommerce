@@ -23,6 +23,8 @@ def product_list(request):
     selected_categories = request.GET.getlist('category')
     selected_brands = request.GET.getlist('brand')
     selected_tags = request.GET.getlist('tag')
+    selected_colors = request.GET.getlist('color')
+    selected_sizes = request.GET.getlist('size')
     selected_attributes = request.GET.getlist('attribute')
     min_price = request.GET.get('min_price')
     max_price = request.GET.get('max_price')
@@ -36,6 +38,16 @@ def product_list(request):
         items = items.filter(Tag__slug__in=selected_tags)
     if selected_attributes:
         items = items.filter(AttributeTerm__slug__in=selected_attributes)
+
+        # Filter by color
+    if selected_colors:
+        # Filter items by the selected colors
+        items = items.filter(ItemVariations__color__slug__in=selected_colors)
+
+    # Filter by size
+    if selected_sizes:
+        items = items.filter(ItemVariations__size__slug__in=selected_sizes)
+
     if min_price:
         items = items.filter(selling_price__gte=min_price)
     if max_price:
@@ -51,6 +63,8 @@ def product_list(request):
     brands = Brand.objects.all()
     tags = Tag.objects.all()
     attributes = AttributeTerm.objects.all()
+    colors = AttributeTerm.objects.filter(Attribute__name__iexact="Color")
+    sizes = AttributeTerm.objects.filter(Attribute__name__iexact="Size")
 
     context = {
         'items': page_items,
@@ -60,6 +74,10 @@ def product_list(request):
         'attributes': attributes,
         'selected_categories': selected_categories,
         'selected_brands': selected_brands,
+        'colors': colors,
+        'sizes': sizes,
+        'selected_colors': selected_colors,
+        'selected_sizes': selected_sizes,
         'selected_tags': selected_tags,
         'selected_attributes': selected_attributes,
         'min_price': min_price,

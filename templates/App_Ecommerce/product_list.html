@@ -4,356 +4,463 @@
 
 {% block content %}
 
-    <!-- breadcrumb start -->
-    <div class="breadcrumb-section">
-        <div class="container">
-            <h2>Collection</h2>
-            <nav class="theme-breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item">
-                        <a href="{% url 'App_Ecommerce:home' %}">Home</a>
-                    </li>
-                    <li class="breadcrumb-item active">Product List</li>
-                </ol>
-            </nav>
+
+    <!-- page-title -->
+    <div class="tf-page-title">
+        <div class="container-full">
+            <div class="row">
+                <div class="col-12">
+                    <div class="heading text-center">New Arrival</div>
+                    <p class="text-center text-2 text_black-2 mt_5">Shop through our latest selection of Fashion</p> 
+                </div>
+            </div>
         </div>
     </div>
-    <!-- breadcrumb end -->
+    <!-- /page-title -->
 
-    <section class="section-b-space ratio_asos">
-        <div class="collection-wrapper">
-            <div class="container">
-                <div class="row">
-                    <div class="col-xl-3 col-lg-4 collection-filter">
-                        <!-- side-bar collapse block stat -->
-                        <div class="collection-filter-block">
-                            <!-- brand filter start -->
-                            <div class="collection-mobile-back"><span class="filter-back"><i
-                                        class="ri-arrow-left-s-line"></i> back</span></div>
-                            <div class="collection-collapse-block open">
-                                <div class="accordion collection-accordion" id="accordionPanelsStayOpenExample">
-                                <form method="GET" action="{% url 'App_Ecommerce:product_list' %}">
-                                    <div class="accordion-item">
-                                        <h2 class="accordion-header">
-                                            <button class="accordion-button pt-0" type="button" data-bs-toggle="collapse"
-                                                data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
-                                                Categories
-                                            </button>
-                                        </h2>
-                                        <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show">
-                                            <div class="accordion-body">
-                                                <ul class="collection-listing">
-                                                    {% for cat in categories %}
-                                                    <li>
-                                                        <div class="form-check">
-                                                            <input class="form-check-input" type="checkbox" name="category" value="{{ cat.slug }}"
-                                                                id="category-{{ cat.id }}" {% if cat.slug in selected_categories %}checked{% endif %}>
-                                                            <label class="form-check-label" for="category-{{ cat.id }}">
-                                                                {{ cat.name }}
-                                                            </label>
-                                                        </div>
-                                                    </li>
-                                                    {% endfor %}
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="accordion-item">
-                                        <h2 class="accordion-header">
-                                            <button class="accordion-button pt-0" type="button" data-bs-toggle="collapse"
-                                                data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="true" aria-controls="panelsStayOpen-collapseTwo">
-                                                Brands
-                                            </button>
-                                        </h2>
-                                        <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse show">
-                                            <div class="accordion-body">
-                                                <ul class="collection-listing">
-                                                    {% for br in brands %}
-                                                    <li>
-                                                        <div class="form-check">
-                                                            <input class="form-check-input" type="checkbox" name="brand" value="{{ br.slug }}"
-                                                                id="brand-{{ br.id }}" {% if br.slug in selected_brands %}checked{% endif %}>
-                                                            <label class="form-check-label" for="brand-{{ br.id }}">
-                                                                {{ br.name }}
-                                                            </label>
-                                                        </div>
-                                                    </li>
-                                                    {% endfor %}
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="accordion-item">
-                                        <h2 class="accordion-header">
-                                            <button class="accordion-button pt-0" type="button" data-bs-toggle="collapse"
-                                                data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="true" aria-controls="panelsStayOpen-collapseThree">
-                                                Tags
-                                            </button>
-                                        </h2>
-                                        <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse show">
-                                            <div class="accordion-body">
-                                                <ul class="collection-listing">
-                                                    {% for tg in tags %}
-                                                    <li>
-                                                        <div class="form-check">
-                                                            <input class="form-check-input" type="checkbox" name="tag" value="{{ tg.slug }}"
-                                                                id="tag-{{ tg.id }}" {% if tg.slug in selected_tags %}checked{% endif %}>
-                                                            <label class="form-check-label" for="tag-{{ tg.id }}">
-                                                                {{ tg.name }}
-                                                            </label>
-                                                        </div>
-                                                    </li>
-                                                    {% endfor %}
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="accordion-item">
-                                        <h2 class="accordion-header">
-                                            <button class="accordion-button pt-0" type="button" data-bs-toggle="collapse"
-                                                data-bs-target="#panelsStayOpen-collapseFour" aria-expanded="true" aria-controls="panelsStayOpen-collapseFour">
-                                                Attributes
-                                            </button>
-                                        </h2>
-                                        <div id="panelsStayOpen-collapseFour" class="accordion-collapse collapse show">
-                                            <div class="accordion-body">
-                                                <ul class="collection-listing">
-                                                    {% for attr in attributes %}
-                                                    <li>
-                                                        <div class="form-check">
-                                                            <input class="form-check-input" type="checkbox" name="attribute" value="{{ attr.slug }}"
-                                                                id="attribute-{{ attr.id }}" {% if attr.slug in selected_attributes %}checked{% endif %}>
-                                                            <label class="form-check-label" for="attribute-{{ attr.id }}">
-                                                                {{ attr.name }}
-                                                            </label>
-                                                        </div>
-                                                    </li>
-                                                    {% endfor %}
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="accordion-item">
-                                        <h2 class="accordion-header">
-                                            <button class="accordion-button pt-0" type="button" data-bs-toggle="collapse"
-                                                data-bs-target="#panelsStayOpen-collapseFive" aria-expanded="true" aria-controls="panelsStayOpen-collapseFive">
-                                                Price Range
-                                            </button>
-                                        </h2>
-                                        <div id="panelsStayOpen-collapseFive" class="accordion-collapse collapse show">
-                                            <div class="accordion-body">
-                                                <div class="form-group">
-                                                    <label for="min_price">Min Price:</label>
-                                                    <input type="number" name="min_price" id="min_price" value="{{ min_price }}" class="form-control">
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="max_price">Max Price:</label>
-                                                    <input type="number" name="max_price" id="max_price" value="{{ max_price }}" class="form-control">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <button type="submit" class="btn btn-primary">Apply Filters</button>
-                                    <a type="btn" href="{% url 'App_Ecommerce:product_list' %}" class="btn btn-danger">Reset</a>
-                                </form>
-                                </div>
-                            </div>
+    <!-- breadcrumb -->
+    <div class="tf-breadcrumb">
+        <div class="container">
+            <div class="tf-breadcrumb-wrap d-flex justify-content-between flex-wrap align-items-center">
+                <div class="tf-breadcrumb-list">
+                    <a href="{% url 'App_Ecommerce:home' %}" class="text">Home</a>
+                    <!-- <i class="icon icon-arrow-right"></i>
+                    <a href="#" class="text">Women</a> -->
+                    <i class="icon icon-arrow-right"></i>
+                    <span class="text">Product List</span>
+                </div>
+
+                <div class="tf-breadcrumb-prev-next">
+                    <a href="#" class="tf-breadcrumb-prev hover-tooltip center">
+                        <i class="icon icon-arrow-left"></i>
+                    </a>
+                    <a href="#" class="tf-breadcrumb-back hover-tooltip center">
+                        <i class="icon icon-shop"></i>
+                    </a>
+                    <a href="#" class="tf-breadcrumb-next hover-tooltip center">
+                        <i class="icon icon-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /breadcrumb -->
+
+
+    <section class="flat-spacing-1">
+        <div class="container">
+            <div class="tf-shop-control grid-3 align-items-center">
+                <div></div>
+                <ul class="tf-control-layout d-flex justify-content-center">
+                    <li class="tf-view-layout-switch sw-layout-2" data-value-grid="grid-2">
+                        <div class="item"><span class="icon icon-grid-2"></span></div>
+                    </li>
+                    <li class="tf-view-layout-switch sw-layout-3 active" data-value-grid="grid-3">
+                        <div class="item"><span class="icon icon-grid-3"></span></div>
+                    </li>
+                    <li class="tf-view-layout-switch sw-layout-4" data-value-grid="grid-4">
+                        <div class="item"><span class="icon icon-grid-4"></span></div>
+                    </li>
+
+                </ul>
+                <div class="tf-control-sorting d-flex justify-content-end">
+                    <div class="tf-dropdown-sort" data-bs-toggle="dropdown">
+                        <div class="btn-select">
+                            <span class="text-sort-value">Featured</span>
+                            <span class="icon icon-arrow-down"></span>
                         </div>
-                        <!-- side-bar collapse block end here -->
-                    </div>
-                    <div class="collection-content col-xl-9 col-lg-8">
-                        <div class="page-main-content">
-                            <!-- <div class="top-banner-wrapper">
-                                <a href="#!">
-                                    <img src="{% static 'assets/images/inner-page/banner/1.png' %}"
-                                        class="img-fluid blur-up lazyload" alt="">
-                                </a>
-                            </div> -->
-                            <button class="filter-btn btn"><i class="ri-arrow-left-s-line"></i> Filter
-                            </button>
-                            <div class="collection-product-wrapper">
-                                <div class="product-top-filter">
-                                    <div class="product-filter-content w-100">
-                                        <div class="d-flex align-items-center gap-sm-3 gap-2">
-                                            <select class="form-select">
-                                                <option selected>Ascending Order</option>
-                                                <option value="1">Descending Order</option>
-                                                <option value="2">Low - High Price</option>
-                                                <option value="3">High - Low Price</option>
-                                            </select>
-
-                                            <select class="form-select">
-                                                <option selected>10 Products</option>
-                                                <option value="1">25 Products</option>
-                                                <option value="2">50 Products</option>
-                                                <option value="3">100 Products</option>
-                                            </select>
-                                        </div>
-
-
-                                        <div class="collection-grid-view">
-                                            <ul>
-                                                <li class="product-2-layout-view grid-icon">
-                                                    <img src="{% static 'assets/images/inner-page/icon/2.png' %}" alt="sort"
-                                                        class=" ">
-                                                </li>
-                                                <li class="product-3-layout-view grid-icon">
-                                                    <img src="{% static 'assets/images/inner-page/icon/3.png' %}" alt="sort"
-                                                        class=" ">
-                                                </li>
-                                                <li class="product-4-layout-view grid-icon active">
-                                                    <img src="{% static 'assets/images/inner-page/icon/4.png' %}" alt="sort"
-                                                        class=" ">
-                                                </li>
-                                                <li class="list-layout-view list-icon">
-                                                    <img src="{% static 'assets/images/inner-page/icon/list.png' %}" alt="sort"
-                                                        class=" ">
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="product-wrapper-grid">
-                                    <div class="row g-3 g-sm-4">
-                                        {% for item in items %}
-                                        <div class="col-xl-3 col-6 col-grid-box">
-                                            <div class="basic-product theme-product-1">
-                                                <div class="overflow-hidden">
-                                                    <div class="img-wrapper">
-                                                        <a href="{% url 'App_Ecommerce:product_detail' item.slug %}">
-                                                            <img src="{% static 'assets/images/fashion-1/product/5.jpg' %}"
-                                                                class="w-100 img-fluid blur-up lazyload" alt="">
-                                                        </a>
-                                                        <div class="rating-label"><i
-                                                                class="ri-star-fill"></i><span>4.5</span>
-                                                        </div>
-                                                        <div class="cart-info">
-                                                            <a href="#!" title="Add to Wishlist" class="wishlist-icon">
-                                                                <i class="ri-heart-line"></i>
-                                                            </a>
-                                                            <button data-bs-toggle="modal" data-bs-target="#addtocart"
-                                                                title="Add to cart">
-                                                                <i class="ri-shopping-cart-line"></i>
-                                                            </button>
-                                                            <a href="#quickView" data-bs-toggle="modal"
-                                                                title="Quick View">
-                                                                <i class="ri-eye-line"></i>
-                                                            </a>
-                                                            <!-- <a href="compare.html" title="Compare">
-                                                                <i class="ri-loop-left-line"></i>
-                                                            </a> -->
-                                                        </div>
-                                                    </div>
-                                                    <div class="product-detail">
-                                                        <div>
-                                                            <div class="brand-w-color">
-                                                                <a class="product-title"
-                                                                    href="{% url 'App_Ecommerce:product_detail' item.slug %}">
-                                                                    {{ item.title }}
-                                                                </a>
-                                                                <div class="color-panel">
-                                                                    <ul>
-                                                                        <li style="background-color: papayawhip;">
-                                                                        </li>
-                                                                        <li style="background-color: burlywood;">
-                                                                        </li>
-                                                                        <li style="background-color: gainsboro;">
-                                                                        </li>
-                                                                    </ul>
-                                                                    <span>+2</span>
-                                                                </div>
-                                                            </div>
-                                                            <h6>{{ item.slug }}</h6>
-
-                                                            <h4 class="price">$ {{ item.discount_price }}<del> ${{ item.selling_price }} </del><span
-                                                                    class="discounted-price"> {{ item.discount }}% Off
-                                                                </span>
-                                                            </h4>
-
-                                                        </div>
-                                                        <ul class="offer-panel">
-                                                            <li><span class="offer-icon"><i
-                                                                        class="ri-discount-percent-fill"></i></span>
-                                                                Limited Time Offer: {{ item.discount }}% off</li>
-                                                            <li><span class="offer-icon"><i
-                                                                        class="ri-discount-percent-fill"></i></span>
-                                                                Limited Time Offer: {{ item.discount }}% off</li>
-                                                            <li><span class="offer-icon"><i
-                                                                        class="ri-discount-percent-fill"></i></span>
-                                                                Limited Time Offer: {{ item.discount }}% off</li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        {% endfor %}
-                                    </div>
-                                </div>
-                                <div class="product-pagination">
-                                    <div class="theme-paggination-block">
-                                        <nav>
-                                            <ul class="pagination">
-                                                <!-- Previous Page Link -->
-                                                {% if items.has_previous %}
-                                                <li class="page-item">
-                                                    <a class="page-link" href="?page={{ items.previous_page_number }}{% if category %}&category={{ category }}{% endif %}{% if brand %}&brand={{ brand }}{% endif %}{% if tag %}&tag={{ tag }}{% endif %}" aria-label="Previous">
-                                                        <span><i class="ri-arrow-left-s-line"></i></span>
-                                                        <span class="sr-only">Previous</span>
-                                                    </a>
-                                                </li>
-                                                {% else %}
-                                                <li class="page-item disabled">
-                                                    <a class="page-link" href="#!" aria-label="Previous">
-                                                        <span><i class="ri-arrow-left-s-line"></i></span>
-                                                        <span class="sr-only">Previous</span>
-                                                    </a>
-                                                </li>
-                                                {% endif %}
-                                
-                                                <!-- Page Number Links -->
-                                                {% for num in items.paginator.page_range %}
-                                                    {% if items.number == num %}
-                                                    <li class="page-item active">
-                                                        <a class="page-link" href="#">{{ num }}</a>
-                                                    </li>
-                                                    {% elif num > items.number|add:'-3' and num < items.number|add:'3' %}
-                                                    <li class="page-item">
-                                                        <a class="page-link" href="?page={{ num }}{% if category %}&category={{ category }}{% endif %}{% if brand %}&brand={{ brand }}{% endif %}{% if tag %}&tag={{ tag }}{% endif %}">{{ num }}</a>
-                                                    </li>
-                                                    {% endif %}
-                                                {% endfor %}
-                                
-                                                <!-- Next Page Link -->
-                                                {% if items.has_next %}
-                                                <li class="page-item">
-                                                    <a class="page-link" href="?page={{ items.next_page_number }}{% if category %}&category={{ category }}{% endif %}{% if brand %}&brand={{ brand }}{% endif %}{% if tag %}&tag={{ tag }}{% endif %}" aria-label="Next">
-                                                        <span><i class="ri-arrow-right-s-line"></i></span>
-                                                        <span class="sr-only">Next</span>
-                                                    </a>
-                                                </li>
-                                                {% else %}
-                                                <li class="page-item disabled">
-                                                    <a class="page-link" href="#!" aria-label="Next">
-                                                        <span><i class="ri-arrow-right-s-line"></i></span>
-                                                        <span class="sr-only">Next</span>
-                                                    </a>
-                                                </li>
-                                                {% endif %}
-                                            </ul>
-                                        </nav>
-                                    </div>
-                                </div>
+                        <div class="dropdown-menu">
+                            <div class="select-item active">
+                                <span class="text-value-item">Featured</span>
+                            </div>
+                            <div class="select-item">
+                                <span class="text-value-item">Best selling</span>
+                            </div>
+                            <div class="select-item">
+                                <span class="text-value-item">Alphabetically, A-Z</span>
+                            </div>
+                            <div class="select-item">
+                                <span class="text-value-item">Alphabetically, Z-A</span>
+                            </div>
+                            <div class="select-item">
+                                <span class="text-value-item">Price, low to high</span>
+                            </div>
+                            <div class="select-item">
+                                <span class="text-value-item">Price, high to low</span>
+                            </div>
+                            <div class="select-item">
+                                <span class="text-value-item">Date, old to new</span>
+                            </div>
+                            <div class="select-item">
+                                <span class="text-value-item">Date, new to old</span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <div class="tf-row-flex">
+                <div class="tf-shop-sidebar wrap-sidebar-mobile">
+                    <form method="GET" action="{% url 'App_Ecommerce:product_list' %}" id="facet-filter-form" class="facet-filter-form">
+                        <div class="widget-facet">
+                            <div class="facet-title" data-bs-target="#category" data-bs-toggle="collapse" aria-expanded="true" aria-controls="category">
+                                <span>Category</span>
+                                <span class="icon icon-arrow-up"></span>
+                            </div>
+                            <div id="category" class="collapse show">
+                                <ul class="tf-filter-group current-scrollbar mb_36">
+                                    {% for cat in categories %}
+
+                                    <li class="list-item d-flex gap-12 align-items-center">
+                                        <input type="checkbox" name="category" class="tf-check" id="category-{{ cat.id }}" value="{{ cat.slug }}" {% if cat.slug in selected_categories %}checked{% endif %}>
+                                        <label for="category-{{ cat.id }}" class="label"><span>{{ cat.name }}</span>&nbsp;<span>(14)</span></label>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="widget-facet">
+                            <div class="facet-title" data-bs-target="#brands" data-bs-toggle="collapse" aria-expanded="true" aria-controls="brands">
+                                <span>Brands</span>
+                                <span class="icon icon-arrow-up"></span>
+                            </div>
+                            <div id="brands" class="collapse show">
+                                <ul class="tf-filter-group current-scrollbar mb_36">
+                                    {% for br in brands %}
+
+                                    <li class="list-item d-flex gap-12 align-items-center">
+                                        <input type="checkbox" name="brand" class="tf-check" id="brand-{{ br.id }}" value="{{ br.slug }}" {% if br.slug in selected_brands %}checked{% endif %}>
+                                        <label for="brand-{{ br.id }}" class="label"><span>{{ br.name }}</span></label>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="widget-facet">
+                            <div class="facet-title" data-bs-target="#tags" data-bs-toggle="collapse" aria-expanded="true" aria-controls="tags">
+                                <span>Tags</span>
+                                <span class="icon icon-arrow-up"></span>
+                            </div>
+                            <div id="tags" class="collapse show">
+                                <ul class="tf-filter-group current-scrollbar mb_36">
+                                    {% for tg in tags %}
+
+                                    <li class="list-item d-flex gap-12 align-items-center">
+                                        <input type="checkbox" name="brand" class="tf-check" id="tag-{{ tg.id }}" value="{{ tg.slug }}" {% if tg.slug in selected_tags %}checked{% endif %}>
+                                        <label for="tag-{{ tg.id }}" class="label"><span>{{ tg.name }}</span></label>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="widget-facet">
+                            <div class="facet-title" data-bs-target="#attributes" data-bs-toggle="collapse" aria-expanded="true" aria-controls="attributes">
+                                <span>Attributes</span>
+                                <span class="icon icon-arrow-up"></span>
+                            </div>
+                            <div id="attributes" class="collapse show">
+                                <ul class="tf-filter-group current-scrollbar mb_36">
+                                    {% for attr in attributes %}
+
+                                    <li class="list-item d-flex gap-12 align-items-center">
+                                        <input type="checkbox" name="attribute" class="tf-check"  id="attribute-{{ attr.id }}" value="{{ attr.slug }}" {% if attr.slug in selected_attributes %}checked{% endif %}>
+                                        <label for="attribute-{{ attr.id }}" class="label"><span>{{ attr.name }}</span></label>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- <div class="widget-facet">
+                            <div class="facet-title" data-bs-target="#colors" data-bs-toggle="collapse" aria-expanded="true" aria-controls="colors">
+                                <span>Colors</span>
+                                <span class="icon icon-arrow-up"></span>
+                            </div>
+                            <div id="colors" class="collapse show">
+                                <ul class="tf-filter-group current-scrollbar mb_36">
+                                    {% for color in colors %}
+                                    <li class="list-item d-flex gap-12 align-items-center">
+                                        <input type="checkbox" name="color" class="tf-check" id="color-{{ color.id }}" value="{{ color.slug }}" 
+                                               {% if color.slug in selected_colors %}checked{% endif %}>
+                                        <label for="color-{{ color.id }}" class="label"><span>{{ color.name }}</span></label>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    
+                        <div class="widget-facet">
+                            <div class="facet-title" data-bs-target="#sizes" data-bs-toggle="collapse" aria-expanded="true" aria-controls="sizes">
+                                <span>Sizes</span>
+                                <span class="icon icon-arrow-up"></span>
+                            </div>
+                            <div id="sizes" class="collapse show">
+                                <ul class="tf-filter-group current-scrollbar mb_36">
+                                    {% for size in sizes %}
+                                    <li class="list-item d-flex gap-12 align-items-center">
+                                        <input type="checkbox" name="size" class="tf-check" id="size-{{ size.id }}" value="{{ size.slug }}" 
+                                               {% if size.slug in selected_sizes %}checked{% endif %}>
+                                        <label for="size-{{ size.id }}" class="label"><span>{{ size.name }}</span></label>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div> -->
+
+                        <div class="widget-facet">
+                            <div class="facet-title" data-bs-target="#price" data-bs-toggle="collapse" aria-expanded="true" aria-controls="price">
+                                <span>Price</span>
+                                <span class="icon icon-arrow-up"></span>
+                            </div>
+                            <div id="price" class="collapse show">
+                                <div class="accordion-body">
+                                    <div class="form-group">
+                                        <label for="min_price">Min Price:</label>
+                                        <input type="number" name="min_price" id="min_price" value="{{ min_price }}" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="max_price">Max Price:</label>
+                                        <input type="number" name="max_price" id="max_price" value="{{ max_price }}" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- <div id="price" class="collapse show">
+                            <div class="widget-price filter-price">
+                                <div class="tow-bar-block">
+                                    <div class="progress-price"></div>
+                                </div>
+                                <div class="range-input">
+                                    <input class="range-min" type="range" min="{{ min_price }}" max="{{ max_price }}" value="{{ min_price }}"/>
+                                    <input class="range-max" type="range" min="{{ min_price }}" max="{{ max_price }}" value="{{ max_price }}"/>
+                                </div>
+                                <div class="box-title-price">
+                                    <span class="title-price">Price :</span>
+                                    <div class="caption-price">
+                                        <div>
+                                            <span>$</span>
+                                            <span class="min-price">{{ min_price }}</span>
+                                        </div>
+                                        <span>-</span>
+                                        <div>
+                                            <span>$</span>
+                                            <span class="max-price">{{ max_price }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div> -->
+
+                        <!-- <div class="widget-facet">
+                            <div class="facet-title" data-bs-target="#color" data-bs-toggle="collapse" aria-expanded="true" aria-controls="color">
+                                <span>Color</span>
+                                <span class="icon icon-arrow-up"></span>
+                            </div>
+                            <div id="color" class="collapse show">
+                                <ul class="tf-filter-group filter-color current-scrollbar mb_36">
+                                    <li class="list-item d-flex gap-12 align-items-center">
+                                        <input type="checkbox" name="color" class="tf-check-color bg_beige" id="beige" value="beige">
+                                        <label for="beige" class="label"><span>Beige</span>&nbsp;<span>(3)</span></label>
+                                    </li>
+                                    <li class="list-item d-flex gap-12 align-items-center">
+                                        <input type="checkbox" name="color" class="tf-check-color bg_dark" id="black" value="black">
+                                        <label for="black" class="label"><span>Black</span>&nbsp;<span>(18)</span></label>
+                                    </li>
+                                    <li class="list-item d-flex gap-12 align-items-center">
+                                        <input type="checkbox" name="color" class="tf-check-color bg_blue-2" id="blue" value="blue">
+                                        <label for="blue" class="label"><span>Blue</span>&nbsp;<span>(3)</span></label>
+                                    </li>
+                                    <li class="list-item d-flex gap-12 align-items-center">
+                                        <input type="checkbox" name="color" class="tf-check-color bg_brown" id="brown" value="brown">
+                                        <label for="brown" class="label"><span>Brown</span>&nbsp;<span>(3)</span></label>
+                                    </li>
+                                    <li class="list-item d-flex gap-12 align-items-center">
+                                        <input type="checkbox" name="color" class="tf-check-color bg_cream" id="cream" value="cream">
+                                        <label for="cream" class="label"><span>Cream</span>&nbsp;<span>(1)</span></label>
+                                    </li>
+                                    <li class="list-item d-flex gap-12 align-items-center">
+                                        <input type="checkbox" name="color" class="tf-check-color bg_dark-beige" id="dark-beige" value="dark-beige">
+                                        <label for="dark-beige" class="label"><span>Dark Beige</span>&nbsp;<span>(1)</span></label>
+                                    </li>
+                                    <li class="list-item d-flex gap-12 align-items-center">
+                                        <input type="checkbox" name="color" class="tf-check-color bg_dark-blue" id="dark-blue" value="dark-blue">
+                                        <label for="dark-blue" class="label"><span>Dark Blue</span>&nbsp;<span>(3)</span></label>
+                                    </li>
+                                    <li class="list-item d-flex gap-12 align-items-center">
+                                        <input type="checkbox" name="color" class="tf-check-color bg_dark-green" id="dark-green" value="dark-green">
+                                        <label for="dark-green" class="label"><span>Dark Green</span>&nbsp;<span>(1)</span></label>
+                                    </li>
+                                    <li class="list-item d-flex gap-12 align-items-center">
+                                        <input type="checkbox" name="color" class="tf-check-color bg_dark-grey" id="dark-grey" value="dark-grey">
+                                        <label for="dark-grey" class="label"><span>Dark Grey</span>&nbsp;<span>(1)</span></label>
+                                    </li>
+                                    <li class="list-item d-flex gap-12 align-items-center">
+                                        <input type="checkbox" name="color" class="tf-check-color bg_grey" id="grey" value="grey">
+                                        <label for="grey" class="label"><span>Grey</span>&nbsp;<span>(2)</span></label>
+                                    </li>
+                                    <li class="list-item d-flex gap-12 align-items-center">
+                                        <input type="checkbox" name="color" class="tf-check-color bg_light-blue" id="light-blue" value="light-blue">
+                                        <label for="light-blue" class="label"><span>Light Blue</span>&nbsp;<span>(5)</span></label>
+                                    </li>
+                                    <li class="list-item d-flex gap-12 align-items-center">
+                                        <input type="checkbox" name="color" class="tf-check-color bg_light-green" id="light-green" value="light-green">
+                                        <label for="light-green" class="label"><span>Light Green</span>&nbsp;<span>(3)</span></label>
+                                    </li>
+                                    <li class="list-item d-flex gap-12 align-items-center">
+                                        <input type="checkbox" name="color" class="tf-check-color bg_light-grey" id="light-grey" value="light-grey">
+                                        <label for="light-grey" class="label"><span>Light Grey</span>&nbsp;<span>(1)</span></label>
+                                    </li>
+                                    <li class="list-item d-flex gap-12 align-items-center">
+                                        <input type="checkbox" name="color" class="tf-check-color bg_light-pink" id="light-pink" value="light-pink">
+                                        <label for="light-pink" class="label"><span>Light Pink</span>&nbsp;<span>(2)</span></label>
+                                    </li>
+                                    <li class="list-item d-flex gap-12 align-items-center">
+                                        <input type="checkbox" name="color" class="tf-check-color bg_purple" id="light-purple" value="light-purple">
+                                        <label for="light-purple" class="label"><span>Light Purple</span>&nbsp;<span>(2)</span></label>
+                                    </li>
+                                    <li class="list-item d-flex gap-12 align-items-center">
+                                        <input type="checkbox" name="color" class="tf-check-color bg_light-yellow" id="light-yellow" value="light-yellow">
+                                        <label for="light-yellow" class="label"><span>Light Yellow</span>&nbsp;<span>(1)</span></label>
+                                    </li>
+                                    <li class="list-item d-flex gap-12 align-items-center">
+                                        <input type="checkbox" name="color" class="tf-check-color bg_orange" id="orange" value="orange">
+                                        <label for="orange" class="label"><span>Orange</span>&nbsp;<span>(1)</span></label>
+                                    </li>
+                                    <li class="list-item d-flex gap-12 align-items-center">
+                                        <input type="checkbox" name="color" class="tf-check-color bg_pink" id="pink" value="pink">
+                                        <label for="pink" class="label"><span>Pink</span>&nbsp;<span>(2)</span></label>
+                                    </li>
+                                    <li class="list-item d-flex gap-12 align-items-center">
+                                        <input type="checkbox" name="color" class="tf-check-color bg_taupe" id="taupe" value="taupe">
+                                        <label for="taupe" class="label"><span>Taupe</span>&nbsp;<span>(1)</span></label>
+                                    </li>
+                                    <li class="list-item d-flex gap-12 align-items-center">
+                                        <input type="checkbox" name="color" class="tf-check-color bg_white" id="white" value="white">
+                                        <label for="white" class="label"><span>White</span>&nbsp;<span>(14)</span></label>
+                                    </li>
+                                    <li class="list-item d-flex gap-12 align-items-center">
+                                        <input type="checkbox" name="color" class="tf-check-color bg_yellow" id="yellow" value="yellow">
+                                        <label for="yellow" class="label"><span>Yellow</span>&nbsp;<span>(1)</span></label>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div> -->
+
+                        <!-- <div class="widget-facet">
+                            <div class="facet-title" data-bs-target="#size" data-bs-toggle="collapse" aria-expanded="true" aria-controls="size">
+                                <span>Size</span>
+                                <span class="icon icon-arrow-up"></span>
+                            </div>
+                            <div id="size" class="collapse show">
+                                <ul class="tf-filter-group current-scrollbar">
+                                    <li class="list-item d-flex gap-12 align-items-center">
+                                        <input type="radio" name="size" class="tf-check tf-check-size" value="s" id="s">
+                                        <label for="s" class="label"><span>S</span>&nbsp;<span>(7)</span></label>
+                                    </li>
+                                    <li class="list-item d-flex gap-12 align-items-center">
+                                        <input type="radio" name="size" class="tf-check tf-check-size" value="m" id="m">
+                                        <label for="m" class="label"><span>M</span>&nbsp;<span>(8)</span></label>
+                                    </li>
+                                    <li class="list-item d-flex gap-12 align-items-center">
+                                        <input type="radio" name="size" class="tf-check tf-check-size" value="l" id="l">
+                                        <label for="l" class="label"><span>L</span>&nbsp;<span>(8)</span></label>
+                                    </li>
+                                    <li class="list-item d-flex gap-12 align-items-center">
+                                        <input type="radio" name="size" class="tf-check tf-check-size" value="xl" id="xl">
+                                        <label for="xl" class="label"><span>XL</span>&nbsp;<span>(6)</span></label>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div> -->
+
+                        <button type="submit" class="btn btn-primary">Apply Filters</button>
+                        <a type="btn" href="{% url 'App_Ecommerce:product_list' %}" class="btn btn-danger">Reset</a>
+
+                    </form>  
+                </div>
+                <div class="tf-shop-content wrapper-control-shop">
+                    <div class="meta-filter-shop"></div>
+                    <div class="grid-layout wrapper-shop" data-grid="grid-3">
+                        
+                    {% for item in items %}
+                        <!-- card product 2 -->
+                        <div class="card-product" data-price="18.95" data-size="m l xl" data-color="brown light-purple light-green">
+                            <div class="card-product-wrapper">
+                                <a href="{% url 'App_Ecommerce:product_detail' item.slug %}" class="product-img">
+                                    <img class="lazyload img-product" data-src="{% static 'assets/images/products/brown.jpg' %}" src="{% static 'assets/images/products/brown.jpg' %}" alt="image-product">
+                                    <img class="lazyload img-hover" data-src="{% static 'assets/images/products/purple.jpg' %}" src="{% static 'assets/images/products/purple.jpg' %}" alt="image-product">
+                                </a>
+                                <div class="list-product-btn">
+                                    <a href="#quick_add" data-bs-toggle="modal" class="box-icon bg_white quick-add tf-btn-loading">
+                                        <span class="icon icon-bag"></span>
+                                        <span class="tooltip">Quick Add</span>
+                                    </a>
+                                    <a href="javascript:void(0);" class="box-icon bg_white wishlist btn-icon-action">
+                                        <span class="icon icon-heart"></span>
+                                        <span class="tooltip">Add to Wishlist</span>
+                                        <span class="icon icon-delete"></span>
+                                    </a>
+                                    <a href="#compare" data-bs-toggle="offcanvas" aria-controls="offcanvasLeft" class="box-icon bg_white compare btn-icon-action">
+                                        <span class="icon icon-compare"></span>
+                                        <span class="tooltip">Add to Compare</span>
+                                        <span class="icon icon-check"></span>
+                                    </a>
+                                    <a href="#quick_view" data-bs-toggle="modal" class="box-icon bg_white quickview tf-btn-loading">
+                                        <span class="icon icon-view"></span>
+                                        <span class="tooltip">Quick View</span>
+                                    </a>
+                                </div>
+                                <div class="size-list">
+                                    <span>M</span>
+                                    <span>L</span>
+                                    <span>XL</span>
+                                </div>
+                                <div class="countdown-box">
+                                    <div class="js-countdown" data-timer="1007500" data-labels="d :,h :,m :,s"></div>
+                                </div>
+                                <div class="on-sale-wrap text-end">
+                                    <div class="on-sale-item">{{ item.discount }}% Off</div>
+                                </div>
+                            </div>
+                            <div class="card-product-info">
+                                <a href="{% url 'App_Ecommerce:product_detail' item.slug %}" class="title link">{{ item.title }}</a>
+                                <span class="price"> <h5>${{ item.discount_price }} </h5> &nbsp; <del> ${{ item.selling_price }} </del></span>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                    </div>
+                    
+                    <!-- pagination -->
+                    <ul class="tf-pagination-wrap tf-pagination-list tf-pagination-btn">
+                        <li class="active">
+                            <a href="#" class="pagination-link">1</a>
+                        </li>
+                        <li>
+                            <a href="#" class="pagination-link animate-hover-btn">2</a>
+                        </li>
+                        <li>
+                            <a href="#" class="pagination-link animate-hover-btn">3</a>
+                        </li>
+                        <li>
+                            <a href="#" class="pagination-link animate-hover-btn">4</a>
+                        </li>
+                        <li>
+                            <a href="#" class="pagination-link animate-hover-btn">
+                                <span class="icon icon-arrow-right"></span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </section>
+
+
     
 {% endblock %}
