@@ -92,128 +92,74 @@
                     <div class="col-md-6">
                         <div class="tf-product-info-wrap position-relative">
                             <div class="tf-zoom-main"></div>
+
+
                             <div class="tf-product-info-list other-image-zoom">
+
                                 <div class="tf-product-info-title">
-                                    <h5>{{ item.title }}</h5>
+                                    <h5>{{item.title}}</h5>
                                 </div>
                                 <div class="tf-product-info-price">
-                                    <div class="price-on-sale">${{ item.discount_price }}</div>
-                                    <div class="compare-at-price">${{ item.selling_price }}</div>
-                                    <div class="badges-on-sale"><span>{{ item.discount }}</span>% OFF</div>
-                                </div>
-                                <div class="tf-product-info-liveview">
-                                    <div class="liveview-count">181</div>
-                                    <p class="fw-6">People are viewing this right now</p>
+                                    <div class="price-on-sale">${{item.discount_price}}</div>
+                                    <div class="compare-at-price">${{item.selling_price}}</div>
+                                    <div class="badges-on-sale"><span>{{item.discount}}</span>% OFF</div>
                                 </div>
                                 <div class="tf-product-info-variant-picker">
-                                    <!-- Loop through color variations -->
-                                    {% for color_name, color_data in color_variations.items %}
+                                    <!-- Color Picker -->
                                     <div class="variant-picker-item">
                                         <div class="variant-picker-label">
                                             Color: 
-                                            <span class="fw-6 variant-picker-label-value value-currentColor">{{ color_name }}</span>
+                                            <span class="fw-6 variant-picker-label-value value-currentColor" id="selected-color">Choose a color</span>
                                         </div>
                                         <div class="variant-picker-values">
-                                            <input id="values-{{ color_data.color_id }}" type="radio" name="color1" {% if forloop.first %}checked{% endif %}>
-                                            <label class="hover-tooltip radius-60 color-btn {% if forloop.first %}active{% endif %}" 
-                                                   data-color="{{ color_name }}" 
-                                                   for="values-{{ color_data.color_id }}" 
-                                                   data-value="{{ color_name }}">
-                                                <span class="btn-checkbox" style="background-color: {{ color_name|lower }}"></span>
-                                                <span class="tooltip">{{ color_name }}</span>
-                                            </label>
-                                        </div>
-                                    </div>
-                                
-                                    <!-- Size variations for the selected color -->
-                                    <div class="variant-picker-item">
-                                        <div class="variant-picker-label">
-                                            Size:
-                                            <span class="fw-6 variant-picker-label-value">Select Size</span>
-                                        </div>
-                                        <div class="variant-picker-values">
-                                            <!-- Loop through sizes associated with the current color -->
-                                            {% for size in color_data.sizes %}
-                                            <input type="radio" name="size1" id="values-{{ size.size_id }}" {% if forloop.first %}checked{% endif %}>
-                                            <label class="style-text size-btn" for="values-{{ size.size_id }}" data-value="{{ size.size_name }}">
-                                                <p>{{ size.size_name }}</p>
+                                            {% for color, variations in color_variations.items %}
+                                            <input id="values-{{ color|slugify }}" type="radio" name="color" class="color-radio" data-color="{{ color }}" data-variations="{{ variations|safe }}">
+                                            <label class="hover-tooltip radius-60 color-btn" data-color="{{ color }}" for="values-{{ color|slugify }}">
+                                                <span class="btn-checkbox" style="background-color: {{ color|lower }}"></span>
+                                                <span class="tooltip">{{ color }}</span>
                                             </label>
                                             {% endfor %}
                                         </div>
-                                        <hr>
                                     </div>
-                                    {% endfor %}
+                                    
+                                    <!-- Size Picker -->
+                                    <div class="variant-picker-item">
+                                        <div class="variant-picker-label">
+                                            Size: 
+                                            <span class="fw-6 variant-picker-label-value value-currentSize" id="selected-size">Select a color first</span>
+                                        </div>
+                                        <div class="variant-picker-values" id="size-picker">
+                                            <!-- Sizes will be dynamically populated -->
+                                        </div>
+                                    </div>
                                 </div>
+
+                                <!-- Quantity Picker -->
                                 <div class="tf-product-info-quantity">
                                     <div class="quantity-title fw-6">Quantity</div>
                                     <div class="wg-quantity">
-                                        <span class="btn-quantity btn-decrease">-</span>
-                                        <input type="text" class="quantity-product" name="number" value="1">
-                                        <span class="btn-quantity btn-increase">+</span>
+                                        <span class="btn-quantity btn-decrease" onclick="changeQuantity(-1)">-</span>
+                                        <input type="number" class="quantity-product" id="quantity" name="quantity" value="1" min="1">
+                                        <span class="btn-quantity btn-increase" onclick="changeQuantity(1)">+</span>
                                     </div>
-                                </div>
-                                <div class="tf-product-info-buy-button">
-                                    <form class="">
-                                        <a href="javascript:void(0);" class="tf-btn btn-fill justify-content-center fw-6 fs-16 flex-grow-1 animate-hover-btn btn-add-to-cart"><span>Checkout -&nbsp;</span><span class="tf-qty-price total-price">${{ item.discount_price }}</span></a>
-                                                                            </form>
-                                </div>
-                                        <!-- <a href="javascript:void(0);" class="tf-product-btn-wishlist hover-tooltip box-icon bg_white wishlist btn-icon-action">
-                                            <span class="icon icon-heart"></span>
-                                            <span class="tooltip">Add to Wishlist</span>
-                                            <span class="icon icon-delete"></span>
-                                        </a>
-                                        <a href="#compare" data-bs-toggle="offcanvas" aria-controls="offcanvasLeft" class="tf-product-btn-wishlist hover-tooltip box-icon bg_white compare btn-icon-action">
-                                            <span class="icon icon-compare"></span>
-                                            <span class="tooltip">Add to Compare</span>
-                                            <span class="icon icon-check"></span>
-                                        </a> -->
-                                        <!-- <div class="w-100">
-                                            <a href="#" class="btns-full">Buy with <img src="images/payments/paypal.png" alt=""></a>
-                                            <a href="#" class="payment-more-option">More payment options</a>
-                                        </div> -->
-                                    </form>
                                 </div>
 
-                                <!-- <div class="tf-product-info-delivery-return">
-                                    <div class="row">
-                                        <div class="col-xl-6 col-12">
-                                            <div class="tf-product-delivery">
-                                                <div class="icon">
-                                                    <i class="icon-delivery-time"></i>
-                                                </div>
-                                                <p>Estimate delivery times: <span class="fw-7">12-26 days</span> (International), <span class="fw-7">3-6 days</span> (United States).</p>
-                                            </div>
-                                        </div>
-                                        <div class="col-xl-6 col-12">
-                                            <div class="tf-product-delivery mb-0">
-                                                <div class="icon">
-                                                    <i class="icon-return-order"></i>
-                                                </div>
-                                                <p>Return within <span class="fw-7">30 days</span> of purchase. Duties & taxes are non-refundable.</p>
-                                            </div>
-                                        </div>
-                                    </div>
+                                <!-- Add to Cart Button -->
+                                <div class="tf-product-info-buy-button">
+                                    <a href="javascript:void(0);" class="tf-btn btn-fill justify-content-center fw-6 fs-16 flex-grow-1 btn-add-to-cart" onclick="addToCart()">
+                                        <span>Add to cart - </span><span class="tf-qty-price total-price">${{ item.price }}</span>
+                                    </a>
                                 </div>
-                                <div class="tf-product-info-trust-seal">
-                                    <div class="tf-product-trust-mess">
-                                        <i class="icon-safe"></i>
-                                        <p class="fw-6">Guarantee Safe <br> Checkout</p>
-                                    </div>
-                                    <div class="tf-payment">
-                                        <img src="images/payments/visa.png" alt="">
-                                        <img src="images/payments/img-1.png" alt="">
-                                        <img src="images/payments/img-2.png" alt="">
-                                        <img src="images/payments/img-3.png" alt="">
-                                        <img src="images/payments/img-4.png" alt="">
-                                    </div>
-                                </div> -->
                             </div>
+
+
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="tf-sticky-btn-atc">
+
+        <!-- <div class="tf-sticky-btn-atc">
             <div class="container">
                 <div class="tf-height-observer w-100 d-flex align-items-center">
                     <div class="tf-sticky-atc-product d-flex align-items-center">
@@ -258,7 +204,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
     </section>
     <!-- /default -->
 
@@ -614,5 +560,66 @@
     <!-- /tabs -->
 
 
+    <script>
+        // Populate sizes when color is selected
+        document.querySelectorAll('.color-radio').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const selectedColor = this.dataset.color;
+                document.getElementById('selected-color').innerText = selectedColor;
+    
+                // Parse variations for this color
+                const variations = JSON.parse(this.dataset.variations.replace(/'/g, '"'));
+    
+                // Populate sizes
+                const sizePicker = document.getElementById('size-picker');
+                sizePicker.innerHTML = '';
+                variations.forEach(variation => {
+                    const sizeId = `size-${variation.size}`;
+                    sizePicker.innerHTML += `
+                        <input type="radio" name="size" id="${sizeId}" value="${variation.size}" data-quantity="${variation.quantity}">
+                        <label class="style-text size-btn" for="${sizeId}" data-value="${variation.size}">
+                            <p>${variation.size}</p>
+                        </label>
+                    `;
+                });
+    
+                document.getElementById('selected-size').innerText = 'Choose a size';
+                document.getElementById('available-quantity').innerText = 'N/A';
+            });
+        });
+    
+        // Update quantity display when size is selected
+        document.addEventListener('change', function(e) {
+            if (e.target && e.target.name === 'size') {
+                const quantity = e.target.dataset.quantity;
+                document.getElementById('selected-size').innerText = e.target.value;
+                document.getElementById('available-quantity').innerText = quantity;
+            }
+        });
+    
+        function changeQuantity(change) {
+            const quantityInput = document.getElementById('quantity');
+            const maxQuantity = parseInt(document.getElementById('available-quantity').innerText || 0);
+            const newQuantity = Math.max(1, Math.min(maxQuantity, parseInt(quantityInput.value || 1) + change));
+            quantityInput.value = newQuantity;
+        }
+    
+        function addToCart() {
+            const selectedColor = document.querySelector('input[name="color"]:checked');
+            const selectedSize = document.querySelector('input[name="size"]:checked');
+            const quantity = document.getElementById('quantity').value;
+    
+            if (!selectedColor) {
+                alert('Please select a color.');
+                return;
+            }
+            if (!selectedSize) {
+                alert('Please select a size.');
+                return;
+            }
+    
+            alert(`Added to cart: Color: ${selectedColor.dataset.color}, Size: ${selectedSize.value}, Quantity: ${quantity}`);
+        }
+    </script>
 
 {% endblock %}

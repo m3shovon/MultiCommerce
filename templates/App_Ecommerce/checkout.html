@@ -1,0 +1,11 @@
+<h1>Checkout</h1>
+<p>Product: {{ variation.Item.title }}</p>
+<p>Color: {{ variation.color.name if variation.color else "N/A" }}</p>
+<p>Size: {{ variation.size.name if variation.size else "N/A" }}</p>
+<p>Price: {{ variation.selling_price }}</p>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Place Order</button>
+</form>

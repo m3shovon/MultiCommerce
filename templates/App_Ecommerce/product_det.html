@@ -1,0 +1,14 @@
+<h1>{{ item.title }}</h1>
+<p>{{ item.product_details }}</p>
+<p>Price: {{ item.selling_price }}</p>
+
+<h3>Variations</h3>
+<ul>
+    {% for variation in variations %}
+    <li>
+        Color: {{ variation.color }},
+        Size: {{ variation.size }},
+        <a href="{% url 'App_Ecommerce:checkout' variation.id %}">Buy Now</a>
+    </li>
+    {% endfor %}
+</ul>

@@ -4,6 +4,15 @@ from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse
+from .forms import OrderForm
+import json
+from decimal import Decimal
+
+def decimal_to_float(obj):
+    """Helper function to convert Decimal to float for JSON serialization."""
+    if isinstance(obj, Decimal):
+        return float(obj)
+    raise TypeError
 
 # Home Page
 def home(request):
@@ -14,6 +23,11 @@ def home(request):
         'categories': categories,
     }
     return render(request, 'App_Ecommerce/home.html', context)
+
+# def product_list(request):
+#     items = Items.objects.filter(is_available=True)
+#     return render(request, 'App_Ecommerce/product_list.html', {'items': items})
+
 
 # Product List View
 def product_list(request):
@@ -86,42 +100,79 @@ def product_list(request):
     return render(request, 'App_Ecommerce/product_list.html', context)
 
 # Product Detail View
-def product_detail(request, slug):
-    # Fetch the item based on the slug
-    item = get_object_or_404(Items, slug=slug)
+# def product_detail(request, slug):
+#     # Fetch the item based on the slug
+#     item = get_object_or_404(Items, slug=slug)
 
-    # Fetch all variations for this item
-    variations = ItemVariation.objects.filter(Item=item, is_available=True)
+#     # Fetch all variations for this item
+#     variations = ItemVariation.objects.filter(Item=item, is_available=True)
 
-    # Group variations by color
-    color_variations = {}
-    for variation in variations:
-        color_name = variation.color.name if variation.color else "No Color"
-        size_name = variation.size.name if variation.size else "No Size"
+#     # Group variations by color
+#     color_variations = {}
+#     for variation in variations:
+#         color_name = variation.color.name if variation.color else "No Color"
+#         size_name = variation.size.name if variation.size else "No Size"
         
+#         if color_name not in color_variations:
+#             color_variations[color_name] = {
+#                 "color_id": variation.color.id if variation.color else None,
+#                 "sizes": []
+#             }
+
+#         color_variations[color_name]["sizes"].append({
+#             "size_name": size_name,
+#             "size_id": variation.size.id if variation.size else None,
+#             "barcode": variation.barcode,
+#             "purchase_price": variation.purchase_price,
+#             "selling_price": variation.selling_price,
+#             "discount_price": variation.discount_price,
+#             "quantity": variation.quantity,
+#             "is_available": variation.is_available,
+#         })
+
+#     context = {
+#         "item": item,
+#         "color_variations": color_variations,
+#     }
+
+#     return render(request, "App_Ecommerce/product_details.html", context)
+
+
+def product_detail(request, slug):
+    item = get_object_or_404(Items, slug=slug)
+    # Grouping variations by color
+    color_variations = {}
+    for variation in item.ItemVariations.all():
+        color_name = variation.color.name if variation.color else "N/A"
         if color_name not in color_variations:
-            color_variations[color_name] = {
-                "color_id": variation.color.id if variation.color else None,
-                "sizes": []
-            }
-
-        color_variations[color_name]["sizes"].append({
-            "size_name": size_name,
-            "size_id": variation.size.id if variation.size else None,
-            "barcode": variation.barcode,
-            "purchase_price": variation.purchase_price,
-            "selling_price": variation.selling_price,
-            "discount_price": variation.discount_price,
-            "quantity": variation.quantity,
-            "is_available": variation.is_available,
+            color_variations[color_name] = []
+        color_variations[color_name].append({
+            'size': variation.size.name if variation.size else "N/A",
+            'quantity': variation.quantity,
         })
-
+    
     context = {
-        "item": item,
-        "color_variations": color_variations,
+        'item': item,
+        'color_variations': color_variations,
     }
+    return render(request, 'App_Ecommerce/product_details.html', context)
 
-    return render(request, "App_Ecommerce/product_details.html", context)
+def checkout(request, variation_id):
+    variation = get_object_or_404(ItemVariation, id=variation_id)
+    if request.method == "POST":
+        form = OrderForm(request.POST)
+        if form.is_valid():
+            order = form.save(commit=False)
+            order.item_variation = variation
+            order.total_price = variation.selling_price * order.quantity
+            order.save()
+            return redirect('App_Ecommerce:order_success')  # Redirect after successful order placement
+    else:
+        form = OrderForm()
+    return render(request, 'App_Ecommerce/checkout.html', {'variation': variation, 'form': form})
+
+def order_success(request):
+    return render(request, 'App_Ecommerce/order_success.html')
 
 # Category View
 def category_list(request, slug):
@@ -135,17 +186,3 @@ def category_list(request, slug):
     return render(request, 'App_Ecommerce/category_list.html', context)
 
 
-
-
-def checkout(request):
-    # if request.method == "POST":
-    #     color_id = request.POST.get('color_id')
-    #     size_id = request.POST.get('size_id')
-    #     quantity = int(request.POST.get('quantity', 1))
-
-    #     # Logic for saving order details and handling checkout
-
-    #     # Redirect to checkout page
-    #     return JsonResponse({"checkout_url": reverse('App_Ecommerce:checkout')})
-    # return redirect("App_Ecommerce:product_list")
-    return render(request, 'App_Ecommerce/checkout.html')
