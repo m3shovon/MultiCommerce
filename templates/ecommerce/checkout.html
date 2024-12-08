@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Checkout{% endblock %}
+
+{% block content %}
+<h1>Checkout</h1>
+<ul>
+    {% for item in cart_items %}
+        <li>{{ item.product_variation.product.name }} - {{ item.product_variation.attribute_term.term }} (Quantity: {{ item.quantity }})</li>
+    {% empty %}
+        <li>Your cart is empty.</li>
+    {% endfor %}
+</ul>
+<form action="" method="post">
+    {% csrf_token %}
+    <button type="submit">Place Order</button>
+</form>
+<a href="{% url 'App_Ecommerce:cart_view' %}">Back to Cart</a>
+{% endblock %}

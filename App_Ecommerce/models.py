@@ -144,17 +144,7 @@ class ItemImage(models.Model):
     def __str__(self):
         return self.Item 
     
-class Services(models.Model):
-    Item = models.ForeignKey('Items', on_delete=models.SET_NULL, null=True, blank=True)
-    name = models.CharField(max_length=255, null=True, blank=True)
-    slug = models.CharField(max_length=255, unique=True, null=True, blank=True) 
-    costing = models.DecimalField(default=0, blank=True, max_digits=20, decimal_places=2)
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
-        return self.name 
-    
 class Order(models.Model):
     customer_name = models.CharField(max_length=255)
     phone = models.CharField(max_length=15)

@@ -104,8 +104,8 @@
                                     <div class="compare-at-price">${{item.selling_price}}</div>
                                     <div class="badges-on-sale"><span>{{item.discount}}</span>% OFF</div>
                                 </div>
-                                <div class="tf-product-info-variant-picker">
-                                    <!-- Color Picker -->
+                                <!-- <div class="tf-product-info-variant-picker">
+                                  
                                     <div class="variant-picker-item">
                                         <div class="variant-picker-label">
                                             Color: 
@@ -122,34 +122,68 @@
                                         </div>
                                     </div>
                                     
-                                    <!-- Size Picker -->
+                                   
                                     <div class="variant-picker-item">
                                         <div class="variant-picker-label">
                                             Size: 
                                             <span class="fw-6 variant-picker-label-value value-currentSize" id="selected-size">Select a color first</span>
                                         </div>
                                         <div class="variant-picker-values" id="size-picker">
-                                            <!-- Sizes will be dynamically populated -->
+                                            
                                         </div>
                                     </div>
-                                </div>
-
-                                <!-- Quantity Picker -->
-                                <div class="tf-product-info-quantity">
-                                    <div class="quantity-title fw-6">Quantity</div>
-                                    <div class="wg-quantity">
-                                        <span class="btn-quantity btn-decrease" onclick="changeQuantity(-1)">-</span>
-                                        <input type="number" class="quantity-product" id="quantity" name="quantity" value="1" min="1">
-                                        <span class="btn-quantity btn-increase" onclick="changeQuantity(1)">+</span>
+                                </div> -->
+                               
+                               
+                                    <div class="card shadow-sm">
+                                        <div class="card-body">
+                                            <!-- <h1 class="card-title text-center">{{ item.title }}</h1> -->
+                                            <!-- Form to add to cart -->
+                                            <form method="post" action="{% url 'App_Ecommerce:add_to_cart' item.id %}" class="needs-validation" novalidate>
+                                                {% csrf_token %}
+                                                
+                                                <div class="mb-3">
+                                                    <label for="color" class="form-label fw-semibold">Select Color:</label>
+                                                    <select id="color" name="color" class="form-select" required>
+                                                        <option value="" disabled selected>-- Select Color --</option>
+                                                        {% for color, variations in color_variations.items %}
+                                                            <option value="{{ color }}">{{ color }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                    <div class="invalid-feedback">Please select a color.</div>
+                                                </div>
+                                
+                                                <div class="mb-3">
+                                                    <label for="size" class="form-label fw-semibold">Select Size:</label>
+                                                    <select id="size" name="size" class="form-select" required>
+                                                        <option value="" disabled selected>-- Select Size --</option>
+                                                        <!-- Sizes will be dynamically populated based on selected color -->
+                                                    </select>
+                                                    <div class="invalid-feedback">Please select a size.</div>
+                                                </div>
+                                
+                                                <div class="mb-3">
+                                                    <label for="quantity" class="form-label fw-semibold">Select Quantity:</label>
+                                                    <input 
+                                                        type="number" 
+                                                        id="quantity" 
+                                                        name="quantity" 
+                                                        class="form-control" 
+                                                        min="1" 
+                                                        max="10" 
+                                                        value="1" 
+                                                        required>
+                                                    <small class="form-text text-muted">Max quantity depends on available stock.</small>
+                                                    <div class="invalid-feedback">Please enter a valid quantity.</div>
+                                                </div>
+                                
+                                                <button type="submit" class="btn btn-primary w-100 mt-3">
+                                                    <i class="bi bi-cart-plus"></i> Add to Cart
+                                                </button>
+                                            </form>
+                                        </div>
                                     </div>
-                                </div>
-
-                                <!-- Add to Cart Button -->
-                                <div class="tf-product-info-buy-button">
-                                    <a href="javascript:void(0);" class="tf-btn btn-fill justify-content-center fw-6 fs-16 flex-grow-1 btn-add-to-cart" onclick="addToCart()">
-                                        <span>Add to cart - </span><span class="tf-qty-price total-price">${{ item.price }}</span>
-                                    </a>
-                                </div>
+                              
                             </div>
 
 
@@ -560,7 +594,7 @@
     <!-- /tabs -->
 
 
-    <script>
+    <!-- <script>
         // Populate sizes when color is selected
         document.querySelectorAll('.color-radio').forEach(radio => {
             radio.addEventListener('change', function() {
@@ -620,6 +654,48 @@
     
             alert(`Added to cart: Color: ${selectedColor.dataset.color}, Size: ${selectedSize.value}, Quantity: ${quantity}`);
         }
+    </script> -->
+
+    <script>
+        // JavaScript to handle size filtering based on selected color
+        const colorSelect = document.getElementById('color');
+        const sizeSelect = document.getElementById('size');
+        const colorVariations = {{ color_variations|safe }};
+    
+        colorSelect.addEventListener('change', function () {
+            const selectedColor = this.value;
+            sizeSelect.innerHTML = '<option value="" disabled selected>-- Select Size --</option>'; // Reset size options
+    
+            if (colorVariations[selectedColor]) {
+                colorVariations[selectedColor].forEach(variation => {
+                    const sizeOption = document.createElement('option');
+                    sizeOption.value = variation.size;
+                    sizeOption.textContent = `${variation.size} (${variation.quantity} available)`;
+                    sizeSelect.appendChild(sizeOption);
+                });
+            }
+        });
     </script>
+    
+    <style>
+        /* Custom Styles */
+        .card {
+            border-radius: 15px;
+        }
+        .card-title {
+            font-size: 1.75rem;
+            color: #333;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        .form-select, .form-control {
+            border-radius: 8px;
+        }
+    </style>
 
 {% endblock %}

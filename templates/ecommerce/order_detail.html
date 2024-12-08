@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}Order Details{% endblock %}
+
+{% block content %}
+<h1>Order Details</h1>
+<p>Order ID: {{ order.id }}</p>
+<p>Status: {{ order.status }}</p>
+<h3>Items:</h3>
+<ul>
+    {% for item in order.cart.items.all %}
+        <li>{{ item.product_variation.product.name }} - {{ item.product_variation.attribute_term.term }} (Quantity: {{ item.quantity }})</li>
+    {% endfor %}
+</ul>
+<a href="{% url 'App_Ecommerce:home' %}">Back to Home</a>
+{% endblock %}

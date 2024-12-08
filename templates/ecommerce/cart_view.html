@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}Cart{% endblock %}
+
+{% block content %}
+<h1>Your Cart</h1>
+<ul>
+    {% for item in cart_items %}
+        <li>
+            {{ item.product_variation.product.name }} - {{ item.product_variation.attribute_term.term }}
+            (Quantity: {{ item.quantity }})
+        </li>
+    {% empty %}
+        <li>Your cart is empty.</li>
+    {% endfor %}
+</ul>
+<p>Total Items: {{ cart.items.count }}</p>
+<a href="{% url 'App_Ecommerce:checkout' %}">Proceed to Checkout</a>
+<a href="{% url 'App_Ecommerce:home' %}">Continue Shopping</a>
+{% endblock %}

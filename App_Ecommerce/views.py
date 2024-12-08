@@ -4,9 +4,12 @@ from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse
-from .forms import OrderForm
+# from .forms import OrderForm
 import json
 from decimal import Decimal
+from django.contrib import messages
+
+
 
 def decimal_to_float(obj):
     """Helper function to convert Decimal to float for JSON serialization."""
@@ -99,44 +102,6 @@ def product_list(request):
     }
     return render(request, 'App_Ecommerce/product_list.html', context)
 
-# Product Detail View
-# def product_detail(request, slug):
-#     # Fetch the item based on the slug
-#     item = get_object_or_404(Items, slug=slug)
-
-#     # Fetch all variations for this item
-#     variations = ItemVariation.objects.filter(Item=item, is_available=True)
-
-#     # Group variations by color
-#     color_variations = {}
-#     for variation in variations:
-#         color_name = variation.color.name if variation.color else "No Color"
-#         size_name = variation.size.name if variation.size else "No Size"
-        
-#         if color_name not in color_variations:
-#             color_variations[color_name] = {
-#                 "color_id": variation.color.id if variation.color else None,
-#                 "sizes": []
-#             }
-
-#         color_variations[color_name]["sizes"].append({
-#             "size_name": size_name,
-#             "size_id": variation.size.id if variation.size else None,
-#             "barcode": variation.barcode,
-#             "purchase_price": variation.purchase_price,
-#             "selling_price": variation.selling_price,
-#             "discount_price": variation.discount_price,
-#             "quantity": variation.quantity,
-#             "is_available": variation.is_available,
-#         })
-
-#     context = {
-#         "item": item,
-#         "color_variations": color_variations,
-#     }
-
-#     return render(request, "App_Ecommerce/product_details.html", context)
-
 
 def product_detail(request, slug):
     item = get_object_or_404(Items, slug=slug)
@@ -157,22 +122,45 @@ def product_detail(request, slug):
     }
     return render(request, 'App_Ecommerce/product_details.html', context)
 
-def checkout(request, variation_id):
-    variation = get_object_or_404(ItemVariation, id=variation_id)
-    if request.method == "POST":
-        form = OrderForm(request.POST)
-        if form.is_valid():
-            order = form.save(commit=False)
-            order.item_variation = variation
-            order.total_price = variation.selling_price * order.quantity
-            order.save()
-            return redirect('App_Ecommerce:order_success')  # Redirect after successful order placement
-    else:
-        form = OrderForm()
-    return render(request, 'App_Ecommerce/checkout.html', {'variation': variation, 'form': form})
 
-def order_success(request):
-    return render(request, 'App_Ecommerce/order_success.html')
+def add_to_cart(request, item_id):
+    if request.method == "POST":
+        color = request.POST.get("color")
+        size = request.POST.get("size")
+        quantity = int(request.POST.get("quantity"))
+
+        try:
+            # Find the corresponding ItemVariation
+            variation = ItemVariation.objects.get(
+                Item_id=item_id,
+                color__name=color,
+                size__name=size,
+                is_available=True
+            )
+            # Check stock availability
+            if variation.quantity < quantity:
+                messages.error(request, "Not enough stock available.")
+                return redirect('App_Ecommerce:product_detail', slug=variation.Item.slug)
+
+            # Add the item to the cart (using session)
+            cart = request.session.get('cart', {})
+            cart_item = {
+                "item_variation_id": variation.id,
+                "title": variation.Item.title,
+                "color": color,
+                "size": size,
+                "quantity": quantity,
+                "price": float(variation.selling_price),  # Convert Decimal to float
+            }
+            cart[variation.id] = cart_item
+            request.session['cart'] = cart
+            messages.success(request, "Item added to cart successfully!")
+        except ItemVariation.DoesNotExist:
+            messages.error(request, "Invalid item variation selected.")
+            return redirect('App_Ecommerce:product_detail', slug=item_id)
+
+    return redirect('App_Ecommerce:product_detail', slug=variation.Item.slug)
+
 
 # Category View
 def category_list(request, slug):

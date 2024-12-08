@@ -1,0 +1,30 @@
+{% extends './base.html' %}
+
+{% block title %}{{ product.name }}{% endblock %}
+
+{% block content %}
+<h1>{{ product.name }}</h1>
+<img src="{{ product.image.url }}" alt="{{ product.name }}">
+<p>{{ product.description }}</p>
+<p>Price: {{ product.price }}</p>
+
+<h3>Available Variations:</h3>
+<ul>
+    {% for variation in variations %}
+        <li>
+            {{ variation.attribute_term.term }} - 
+            {% if variation.stock > 0 %}
+                <form action="{% url 'App_Ecommerce:add_to_cart' variation.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit">Add to Cart</button>
+                </form>
+            {% else %}
+                Out of stock
+            {% endif %}
+        </li>
+    {% empty %}
+        <li>No variations available.</li>
+    {% endfor %}
+</ul>
+<a href="{% url 'App_Ecommerce:home' %}">Back to Home</a>
+{% endblock %}
