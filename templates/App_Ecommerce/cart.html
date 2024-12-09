@@ -31,10 +31,10 @@
                             <tr class="tf-cart-item file-delete">
                                 <td class="tf-cart-item_product">
                                     <a href="product-detail.html" class="img-box">
-                                        <img src="images/products/white-2.jpg" alt="img-product">
+                                        <img src="{% static 'assets/images/products/white-2.jpg' %}" alt="img-product">
                                     </a>
                                     <div class="cart-info">
-                                        <a href="product-detail.html" class="cart-title link">{{ item.item_variation.Item.title }}</a>
+                                        <a href="" class="cart-title link">{{ item.item_variation.Item.title }}</a>
                                         <div class="cart-meta-variant">{{ item.item_variation.color }} | {{ item.item_variation.size }}</div>
                                         <span class="remove-cart link remove">Remove</span>
                                     </div>
