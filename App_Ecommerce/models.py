@@ -145,18 +145,6 @@ class ItemImage(models.Model):
         return self.Item 
     
 
-
-class Order(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
-    items = models.ManyToManyField('CartItem')
-    total_price = models.DecimalField(max_digits=10, decimal_places=2)
-    order_note = models.TextField(blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"Order #{self.user} - {self.total_price}"
-    
-
 class Cart(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -186,3 +174,22 @@ class CartItem(models.Model):
         if not self.price:
             self.price = self.item_variation.Item.discount_price
         super().save(*args, **kwargs)
+
+
+
+class Order(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
+    invoice_no = models.CharField(max_length=255, null=True, blank=True)
+    name = models.CharField(max_length=255, null=True, blank=True)
+    phone = models.CharField(max_length=20, null=True, blank=True)
+    address = models.TextField(null=True, blank=True)
+    order_note = models.TextField(null=True, blank=True)
+    items = models.ManyToManyField(CartItem)
+    total_price = models.DecimalField(max_digits=10, decimal_places=2)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Order #{self.id} by {self.user} - Total: {self.total_price}"
+
+    def get_items(self):
+        return self.items.all()

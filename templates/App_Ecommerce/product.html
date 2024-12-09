@@ -1,7 +1,0 @@
-{% for item in items %}
-<div>
-    <h2><a href="{% url 'App_Ecommerce:product_detail' item.slug %}">{{ item.title }}</a></h2>
-    <p>{{ item.product_details }}</p>
-    <p>Price: {{ item.selling_price }}</p>
-</div>
-{% endfor %}

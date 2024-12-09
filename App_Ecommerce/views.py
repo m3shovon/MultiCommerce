@@ -183,16 +183,6 @@ def cart(request):
     print(cart)
     return render(request, "App_Ecommerce/cart.html", context)
 
-
-# def remove_from_cart(request, variation_id):
-#     cart = request.session.get('cart', {})
-#     if variation_id in cart:
-#         del cart[variation_id]
-#         request.session['cart'] = cart
-#         messages.success(request, "Item removed from cart.")
-#     return redirect('App_Ecommerce:cart')
-
-
 @csrf_protect
 def checkout(request):
     # Fetch the cart associated with the logged-in user
@@ -205,37 +195,34 @@ def checkout(request):
         return redirect('App_Ecommerce:cart')  # Redirect if no cart or cart is empty
 
     return render(request, 'App_Ecommerce/order.html', {'cart': cart})
-
 @csrf_protect
 def order(request):
     if request.method == 'POST':
-        cart = Cart.objects.get(user=request.user)
-        if not cart or not cart.items.exists():
-            return redirect('App_Ecommerce:cart')  
+        # Retrieve the user's cart
+        cart = get_object_or_404(Cart, user=request.user)
 
-        # Extract user input from form
-        name = request.POST.get('name')
-        phone = request.POST.get('phone')
-        address = request.POST.get('address')
-        order_note = request.POST.get('order_note', '')
-
-        # Create Order
+        # Create the order
         order = Order.objects.create(
             user=request.user,
+            name=request.POST.get('name'),
+            phone=request.POST.get('phone'),
+            address=request.POST.get('address'),
+            order_note=request.POST.get('order_note', ''),
             total_price=cart.total_price(),
-            order_note=order_note,
         )
 
-        # Add items from cart to order
-        for cart_item in cart.items.all():
-            order.items.add(cart_item)
+        # Add cart items to the order
+        order.items.add(*cart.items.all())  # Use add() with unpacked querysets
 
-        # Clear cart after order placement
-        cart.items.all().delete()
+        # Clear the cart
+        # cart.items.set([])  # Correctly clear the many-to-many relation
 
-        return redirect('App_Ecommerce:order_success')
+        cart.total_price = 0  # Reset the cart's total price
+        cart.save()
 
-    return redirect('App_Ecommerce:cart')
+        return redirect('App_Ecommerce:order_success')  # Redirect to success page
+
+    return redirect('App_Ecommerce:cart') 
 
 def order_success(request):
     return render(request, 'App_Ecommerce/order_successful.html')
