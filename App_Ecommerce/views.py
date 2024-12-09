@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Items, Category, Brand, Tag, AttributeTerm, ItemVariation
+from .models import Items, Category, Brand, Tag, AttributeTerm, ItemVariation, Order, Cart, CartItem
+from .forms import CheckoutForm, AddToCartForm
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.shortcuts import redirect
@@ -8,6 +9,9 @@ from django.urls import reverse
 import json
 from decimal import Decimal
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_protect
+
 
 
 
@@ -30,6 +34,17 @@ def home(request):
 # def product_list(request):
 #     items = Items.objects.filter(is_available=True)
 #     return render(request, 'App_Ecommerce/product_list.html', {'items': items})
+
+# Category View
+def category_list(request, slug):
+    category = get_object_or_404(Category, slug=slug)
+    items = Items.objects.filter(Category=category)
+
+    context = {
+        'category': category,
+        'items': items,
+    }
+    return render(request, 'App_Ecommerce/category_list.html', context)
 
 
 # Product List View
@@ -122,55 +137,108 @@ def product_detail(request, slug):
     }
     return render(request, 'App_Ecommerce/product_details.html', context)
 
-
+@login_required
 def add_to_cart(request, item_id):
     if request.method == "POST":
-        color = request.POST.get("color")
-        size = request.POST.get("size")
-        quantity = int(request.POST.get("quantity"))
+        form = AddToCartForm(request.POST)
+        if form.is_valid():
+            # Extract data from form
+            color_name = form.cleaned_data["color"]
+            size_name = form.cleaned_data["size"]
+            quantity = form.cleaned_data["quantity"]
 
-        try:
-            # Find the corresponding ItemVariation
-            variation = ItemVariation.objects.get(
-                Item_id=item_id,
-                color__name=color,
-                size__name=size,
-                is_available=True
+            # Find the item variation
+            item_variation = get_object_or_404(
+                ItemVariation,
+                Item__id=item_id,
+                color__name=color_name,
+                size__name=size_name,
             )
-            # Check stock availability
-            if variation.quantity < quantity:
-                messages.error(request, "Not enough stock available.")
-                return redirect('App_Ecommerce:product_detail', slug=variation.Item.slug)
 
-            # Add the item to the cart (using session)
-            cart = request.session.get('cart', {})
-            cart_item = {
-                "item_variation_id": variation.id,
-                "title": variation.Item.title,
-                "color": color,
-                "size": size,
-                "quantity": quantity,
-                "price": float(variation.selling_price),  # Convert Decimal to float
-            }
-            cart[variation.id] = cart_item
-            request.session['cart'] = cart
-            messages.success(request, "Item added to cart successfully!")
-        except ItemVariation.DoesNotExist:
-            messages.error(request, "Invalid item variation selected.")
-            return redirect('App_Ecommerce:product_detail', slug=item_id)
+            # Get or create cart for the user
+            cart, created = Cart.objects.get_or_create(user=request.user)
 
-    return redirect('App_Ecommerce:product_detail', slug=variation.Item.slug)
+            # Add item to cart or update existing cart item
+            cart_item, created = CartItem.objects.get_or_create(
+                cart=cart,
+                item_variation=item_variation,
+                defaults={"quantity": quantity},
+            )
+            if not created:
+                cart_item.quantity += quantity
+                cart_item.save()
+
+            return redirect("App_Ecommerce:cart")
+
+        else:
+            return JsonResponse({"error": "Invalid form data"}, status=400)
+
+    return redirect("App_Ecommerce:home")
 
 
-# Category View
-def category_list(request, slug):
-    category = get_object_or_404(Category, slug=slug)
-    items = Items.objects.filter(Category=category)
-
-    context = {
-        'category': category,
-        'items': items,
-    }
-    return render(request, 'App_Ecommerce/category_list.html', context)
+@login_required
+def cart(request):
+    cart, created = Cart.objects.get_or_create(user=request.user)
+    context = {"cart": cart}
+    print(cart)
+    return render(request, "App_Ecommerce/cart.html", context)
 
 
+# def remove_from_cart(request, variation_id):
+#     cart = request.session.get('cart', {})
+#     if variation_id in cart:
+#         del cart[variation_id]
+#         request.session['cart'] = cart
+#         messages.success(request, "Item removed from cart.")
+#     return redirect('App_Ecommerce:cart')
+
+
+@csrf_protect
+def checkout(request):
+    # Fetch the cart associated with the logged-in user
+    try:
+        cart = Cart.objects.get(user=request.user)
+    except Cart.DoesNotExist:
+        cart = None  # Handle the case where the user doesn't have a cart yet
+
+    if not cart or not cart.items.exists():
+        return redirect('App_Ecommerce:cart')  # Redirect if no cart or cart is empty
+
+    return render(request, 'App_Ecommerce/order.html', {'cart': cart})
+
+@csrf_protect
+def order(request):
+    if request.method == 'POST':
+        cart = Cart.objects.get(user=request.user)
+        if not cart or not cart.items.exists():
+            return redirect('App_Ecommerce:cart')  
+
+        # Extract user input from form
+        name = request.POST.get('name')
+        phone = request.POST.get('phone')
+        address = request.POST.get('address')
+        order_note = request.POST.get('order_note', '')
+
+        # Create Order
+        order = Order.objects.create(
+            user=request.user,
+            total_price=cart.total_price(),
+            order_note=order_note,
+        )
+
+        # Add items from cart to order
+        for cart_item in cart.items.all():
+            order.items.add(cart_item)
+
+        # Clear cart after order placement
+        cart.items.all().delete()
+
+        return redirect('App_Ecommerce:order_success')
+
+    return redirect('App_Ecommerce:cart')
+
+def order_success(request):
+    return render(request, 'App_Ecommerce/order_successful.html')
+
+def order_failed(request):
+    return render(request, 'App_Ecommerce/order_failure.html')

@@ -121,7 +121,7 @@ class ItemVariation(models.Model):
     updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.Item.title} - {self.color.name if self.color else 'No Color'} - {self.size.name if self.size else 'No Size'}"
+        return f"{self.Item.title} - {self.color.name if self.color else 'No Color'} - {self.size.name if self.size else 'No Size'} - {self.quantity}"
 
 
     def save(self, *args, **kwargs):
@@ -145,14 +145,44 @@ class ItemImage(models.Model):
         return self.Item 
     
 
+
 class Order(models.Model):
-    customer_name = models.CharField(max_length=255)
-    phone = models.CharField(max_length=15)
-    address = models.TextField()
-    item_variation = models.ForeignKey(ItemVariation, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField(default=1)
-    total_price = models.DecimalField(max_digits=20, decimal_places=2)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
+    items = models.ManyToManyField('CartItem')
+    total_price = models.DecimalField(max_digits=10, decimal_places=2)
+    order_note = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Order #{self.id} - {self.customer_name}"
+        return f"Order #{self.user} - {self.total_price}"
+    
+
+class Cart(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Cart for {self.user}"
+
+    def total_price(self):
+        return sum(item.total_price for item in self.items.all())
+
+
+class CartItem(models.Model):
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name="items")
+    item_variation = models.ForeignKey(ItemVariation, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+    price = models.DecimalField(max_digits=20, decimal_places=2)
+
+    def __str__(self):
+        return f"{self.quantity} x {self.price}"
+
+    @property
+    def total_price(self):
+        return self.quantity * self.price
+    
+    def save(self, *args, **kwargs):
+        # Ensure price is set to the discount_price of the related Item if not provided
+        if not self.price:
+            self.price = self.item_variation.Item.discount_price
+        super().save(*args, **kwargs)

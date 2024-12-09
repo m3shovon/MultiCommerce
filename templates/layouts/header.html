@@ -67,6 +67,9 @@
                         <li class="categories-item active"><a href="home-men.html" class="text-uppercase">Men</a></li>
                         <li class="categories-item"><a href="home-kids.html" class="text-uppercase">Kids</a></li>
                         <li class="categories-item"><a href="store-locations.html" class="text-uppercase">Find a Store</a></li>
+                        {% if user.is_authenticated %}
+                        <li class="categories-item"><a href="" class="text-uppercase">{{ user.email }}</a></li>
+                        {% endif %}
                     </ul>
                 </div>
                 <div class="col-md-4 col-3 tf-lg-hidden">

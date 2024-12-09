@@ -1,11 +1,12 @@
-<h1>Checkout</h1>
-<p>Product: {{ variation.Item.title }}</p>
-<p>Color: {{ variation.color.name if variation.color else "N/A" }}</p>
-<p>Size: {{ variation.size.name if variation.size else "N/A" }}</p>
-<p>Price: {{ variation.selling_price }}</p>
+{% extends 'layouts/base.html' %}
 
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Place Order</button>
-</form>
+{% block content %}
+<div class="container">
+    <h2>Checkout</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-success">Place Order</button>
+    </form>
+</div>
+{% endblock %}
